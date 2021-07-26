@@ -46,6 +46,9 @@ def grid_search_mnist():
             for decomp in decompression_to_test:
                 parameters["decompression"] = decomp
 
+                tf.keras.backend.clear_session()
+                tf.compat.v1.reset_default_graph()
+
                 model_name = f'accordion{parameters["accordions"]}-{parameters["compression"]}-{parameters["decompression"]}'
                 # TODO: implement GridSearchCV
 
