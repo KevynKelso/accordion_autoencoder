@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from creditcarddata import get_creditcard_data_normalized
-from autoencoder_designs import accordion_model
+from autoencoder_designs import accordion_sequential
 from accordion_mnist import get_formatted_mnist_data
 from tf_utils import early_stop
 from plots import *
@@ -29,12 +29,12 @@ def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
     accordions = 2
     compression = 32
-    decompression = 128
+    decompression = 64
     model_name = f'accordion{accordions}-{compression}-{decompression}'
     # TODO: implement GridSearchCV
 
     # TODO: find good model that doesn't take forever to train
-    model = accordion_model(784, accordions, compression, decompression)
+    model = accordion_sequential(784, accordions, compression, decompression)
     model.summary()
 
     r = model.fit(training_data, training_data, epochs=100, batch_size=256, shuffle=True,

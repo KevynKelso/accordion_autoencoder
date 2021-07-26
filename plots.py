@@ -24,5 +24,5 @@ def plot_original_vs_reconstructed_imgs(original, reconstructed):
         plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-    plt.show()
+    plt.savefig('original_vs_reconstructed.png')
 
