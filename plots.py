@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 
 
-def plot_original_vs_reconstructed_imgs(original, reconstructed):
+def plot_original_vs_reconstructed_imgs(parameters, original, reconstructed):
     n = 10 # 20 digits to display
-    plt.figure(figsize=(20, 6))
+    plt.figure()
 
     for i in range(n):
         # original image
@@ -24,5 +24,5 @@ def plot_original_vs_reconstructed_imgs(original, reconstructed):
         plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-    plt.savefig('original_vs_reconstructed.png')
+    plt.savefig(f'{parameters["accordions"]}accords-{parameters["compression"]}c-{parameters["decompression"]}d.png')
 

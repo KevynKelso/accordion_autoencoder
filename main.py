@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
+import itertools
 
 from creditcarddata import get_creditcard_data_normalized
 from autoencoder_designs import accordion_sequential
 from accordion_mnist import get_formatted_mnist_data
 from tf_utils import early_stop
+from itertools import permutations
 from plots import *
 
 from sklearn.model_selection import GridSearchCV
@@ -27,25 +29,39 @@ def grid_search_fraud():
 
 def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
-    accordions = 2
-    compression = 32
-    decompression = 64
-    model_name = f'accordion{accordions}-{compression}-{decompression}'
-    # TODO: implement GridSearchCV
+    accodions_to_test = [1,2,3]
+    compressions_to_test = [16,32]
+    decompression_to_test = [32, 64, 128]
 
-    # TODO: find good model that doesn't take forever to train
-    model = accordion_sequential(784, accordions, compression, decompression)
-    model.summary()
+    parameters = {
+            "accordions": 2,
+            "compression": 32,
+            "decompression": 64,
+    }
 
-    r = model.fit(training_data, training_data, epochs=100, batch_size=256, shuffle=True,
-        validation_data=(testing_data, testing_data), callbacks=[early_stop()])
+    for acc in accodions_to_test:
+        parameters["accordions"] = acc
+        for comp in compressions_to_test:
+            parameters["compression"] = comp
+            for decomp in decompression_to_test:
+                parameters["decompression"] = decomp
 
-    actual_epoch = len(r.history['loss'])
-    model.save(f'models/mnist_accordion_models/{actual_epoch}p-{model_name}.h5')
+                model_name = f'accordion{parameters["accordions"]}-{parameters["compression"]}-{parameters["decompression"]}'
+                # TODO: implement GridSearchCV
 
-    reconstructed_imgs = model.predict(testing_data)
+                # TODO: find good model that doesn't take forever to train
+                model = accordion_sequential(784, parameters["accordions"], parameters["compression"], parameters["decompression"])
+                model.summary()
 
-    plot_original_vs_reconstructed_imgs(testing_data, reconstructed_imgs)
+                r = model.fit(training_data, training_data, epochs=1, batch_size=256, shuffle=True,
+                    validation_data=(testing_data, testing_data), callbacks=[early_stop()])
+
+                actual_epoch = len(r.history['loss'])
+                model.save(f'models/mnist_accordion_models/{actual_epoch}p-{model_name}.h5')
+
+                reconstructed_imgs = model.predict(testing_data)
+
+                plot_original_vs_reconstructed_imgs(parameters, testing_data, reconstructed_imgs)
 
 
 
