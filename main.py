@@ -53,7 +53,7 @@ def grid_search_mnist():
                 model = accordion_sequential(784, parameters["accordions"], parameters["compression"], parameters["decompression"])
                 model.summary()
 
-                r = model.fit(training_data, training_data, epochs=1, batch_size=256, shuffle=True,
+                r = model.fit(training_data, training_data, epochs=100, batch_size=256, shuffle=True,
                     validation_data=(testing_data, testing_data), callbacks=[early_stop()])
 
                 actual_epoch = len(r.history['loss'])
