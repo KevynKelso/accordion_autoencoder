@@ -31,8 +31,8 @@ def grid_search_fraud():
 def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
     accodions_to_test = [2, 3, 4, 5]
-    compressions_to_test = [4, 8, 12, 16, 32]
-    decompression_to_test = [9, 16, 32, 64, 128]
+    compressions_to_test = [32, 48, 64]
+    decompression_to_test = [32, 64, 128]
 
     parameters = {
             "accordions": 2,
