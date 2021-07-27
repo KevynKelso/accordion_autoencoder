@@ -7,7 +7,7 @@ def early_stop():
         monitor='val_loss',
         min_delta=0.0001,
         patience=10,
-        verbose=1, 
+        verbose=1,
         mode='min',
         restore_best_weights=True)
 

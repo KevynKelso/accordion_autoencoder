@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 import itertools
 
 from creditcarddata import get_creditcard_data_normalized
@@ -29,9 +30,9 @@ def grid_search_fraud():
 
 def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
-    accodions_to_test = [1,2,3]
-    compressions_to_test = [16,32]
-    decompression_to_test = [32, 64, 128]
+    accodions_to_test = [2, 3, 4, 5]
+    compressions_to_test = [2, 4, 8, 16]
+    decompression_to_test = [16, 32, 64]
 
     parameters = {
             "accordions": 2,
@@ -56,16 +57,16 @@ def grid_search_mnist():
                 model = accordion_sequential(784, parameters["accordions"], parameters["compression"], parameters["decompression"])
                 model.summary()
 
-                r = model.fit(training_data, training_data, epochs=100, batch_size=256, shuffle=True,
+                r = model.fit(training_data, training_data, epochs=200, batch_size=256, shuffle=True,
                     validation_data=(testing_data, testing_data), callbacks=[early_stop()])
 
+                min_loss = min(r.history['loss'])
                 actual_epoch = len(r.history['loss'])
-                model.save(f'models/mnist_accordion_models/{actual_epoch}p-{model_name}.h5')
+                model.save(f'models/mnist_accordion_models/{actual_epoch}p-{model_name}-{round(min_loss, 3)}.h5')
 
                 reconstructed_imgs = model.predict(testing_data)
 
                 plot_original_vs_reconstructed_imgs(parameters, testing_data, reconstructed_imgs)
-
 
 
 def main():
