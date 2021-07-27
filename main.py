@@ -32,7 +32,7 @@ def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
     accodions_to_test = [2, 3, 4, 5]
     compressions_to_test = [32, 48, 64]
-    decompression_to_test = [32, 64, 128]
+    decompression_to_test = [48, 64, 128]
 
     parameters = {
             "accordions": 2,
