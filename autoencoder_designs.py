@@ -19,25 +19,34 @@ def accordion_sequential(input_dim, accordions=1, compression=1, decompression=1
 
     return model
 
+
 def accordion_covnet(input_dim, accordions=1, compression=1, decompression=1):
-        input_img = keras.Input(shape=(28, 28, 1))
+    # grayscale images only
+    model = tf.keras.Sequential(name=f'accordion_covnet{accordions:02}')
+    model.add(tf.keras.layers.Conv2D(compression, activation='relu', input_shape=(input_dim,input_dim,1)))
 
-        x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
-        x = layers.MaxPooling2D((2, 2), padding='same')(x)
-        x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        x = layers.MaxPooling2D((2, 2), padding='same')(x)
-        x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        encoded = layers.MaxPooling2D((2, 2), padding='same')(x)
+    for _ in range(accordions):
+        model.add(tf.keras.layers.Conv2D(decompression, activation='relu'))
+        model.add(tf.keras.layers.Conv2D(decompression, activation='relu'))
 
-        # at this point the representation is (4, 4, 8) i.e. 128-dimensional
+    input_img = keras.Input(shape=(28, 28, 1))
 
-        x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
-        x = layers.UpSampling2D((2, 2))(x)
-        x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        x = layers.UpSampling2D((2, 2))(x)
-        x = layers.Conv2D(16, (3, 3), activation='relu')(x)
-        x = layers.UpSampling2D((2, 2))(x)
-        decoded = layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+    x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
+    x = layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    encoded = layers.MaxPooling2D((2, 2), padding='same')(x)
 
-        return keras.Model(input_img, decoded)
+    # at this point the representation is (4, 4, 8) i.e. 128-dimensional
+
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
+    x = layers.UpSampling2D((2, 2))(x)
+    x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D((2, 2))(x)
+    x = layers.Conv2D(16, (3, 3), activation='relu')(x)
+    x = layers.UpSampling2D((2, 2))(x)
+    decoded = layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+
+    return keras.Model(input_img, decoded)
 

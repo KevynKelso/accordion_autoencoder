@@ -31,8 +31,8 @@ def grid_search_fraud():
 def grid_search_mnist():
     training_data, testing_data = get_formatted_mnist_data()
     accodions_to_test = [2, 3, 4, 5]
-    compressions_to_test = [2, 4, 8, 16]
-    decompression_to_test = [16, 32, 64]
+    compressions_to_test = [4, 8, 12, 16, 32]
+    decompression_to_test = [9, 16, 32, 64, 128]
 
     parameters = {
             "accordions": 2,
@@ -40,6 +40,7 @@ def grid_search_mnist():
             "decompression": 64,
     }
 
+    best_loss = 1
     for acc in accodions_to_test:
         parameters["accordions"] = acc
         for comp in compressions_to_test:
@@ -61,12 +62,22 @@ def grid_search_mnist():
                     validation_data=(testing_data, testing_data), callbacks=[early_stop()])
 
                 min_loss = min(r.history['loss'])
+                if min_loss < best_loss:
+                    best_loss = min_loss
+
                 actual_epoch = len(r.history['loss'])
-                model.save(f'models/mnist_accordion_models/{actual_epoch}p-{model_name}-{round(min_loss, 3)}.h5')
+                model_file = f'{actual_epoch}p-{model_name}-{round(min_loss,3)}'
+                model.save(f'models/mnist_accordion_models/{model_file}.h5')
+
+                with open("data.txt", "a") as f:
+                    f.write(f'{model_file}\n')
 
                 reconstructed_imgs = model.predict(testing_data)
 
                 plot_original_vs_reconstructed_imgs(parameters, testing_data, reconstructed_imgs)
+
+    with open("data.txt", "a") as f:
+        f.write(best_loss)
 
 
 def main():
