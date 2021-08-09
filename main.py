@@ -5,7 +5,7 @@ import itertools
 
 from creditcarddata import get_creditcard_data_normalized
 from autoencoder_designs import *
-from accodion_classifiers import accordion_mnist_classifier
+from accodion_classifiers import *
 from accordion_mnist import get_formatted_mnist_classification_data
 from tf_utils import early_stop
 from plots import *
@@ -15,9 +15,9 @@ from sklearn.model_selection import GridSearchCV
 def grid_search_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    accodions_to_test = [2, 3, 4, 5]
+    accodions_to_test = [2, 3, 4, 5, 6]
     compressions_to_test = [32, 48, 64]
-    decompression_to_test = [48, 64, 128]
+    decompression_to_test = [48, 64, 128, 256]
 
     parameters = {
             "accordions": 2,
@@ -37,43 +37,40 @@ def grid_search_mnist():
                 tf.compat.v1.reset_default_graph()
 
                 model_name = f'mnist_class_accordion{parameters["accordions"]}-{parameters["compression"]}-{parameters["decompression"]}'
+                eval_model_name = f'{model_name}_eval'
 
                 model = accordion_mnist_classifier(model_name, parameters["accordions"], parameters["compression"], parameters["decompression"])
-                model.summary()
+                r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
-                r = model.fit(x_train, y_train, epochs=200, shuffle=True, validation_data=(x_test, y_test), callbacks=[early_stop()])
+                tf.keras.backend.clear_session()
+                tf.compat.v1.reset_default_graph()
 
-                min_loss = min(r.history['loss'])
-                if min_loss < best_loss:
-                    best_loss = min_loss
+                eval_model = eval_accordion_mnist_classifier(eval_model_name, parameters["accordions"], parameters["compression"], parameters["decompression"])
+                r_eval = fit_model(eval_model, eval_model_name, x_train, y_train, x_test, y_test)
 
-                actual_epoch = len(r.history['loss'])
-                model_file = f'{actual_epoch}p-{model_name}-{round(min_loss,3)}'
-                model.save(f'models/mnist_accordion_models/{model_file}.h5')
-
-                # file will be accordions, compressions, decompressions, loss, accuracy, val_loss, val_accuracy
-                with open("mnist_class_data1.csv", "a") as f:
+                # file will be accordions, compressions, decompressions, loss, accuracy, val_loss, val_accuracy, eval_loss, eval_accuracy, eval_val_loss, eval_val_accuracy
+                with open("mnist_class_data2.csv", "a") as f:
                     f.write(f'{parameters["accordions"]},{parameters["compression"]},{parameters["decompression"]},' +
-                            f'{round(min_loss,3)},{round(max(r.history["accuracy"]),3)},{round(min(r.history["val_loss"]),3)},' +
-                            f'{round(max(r.history["val_accuracy"]),3)}\n')
-
+                            f'{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                            f'{max(r.history["val_accuracy"])},{min(r_eval.history["loss"])},{max(r_eval.history["accuracy"])},' +
+                            f'{min(r_eval.history["val_loss"])},{max(r_eval.history["val_accuracy"])}\n')
                 # reconstructed_imgs = model.predict(testing_data)
 
                 # plot_original_vs_reconstructed_imgs(parameters, testing_data, reconstructed_imgs)
 
-    with open("mnist_class_data1.csv", "a") as f:
-        f.write(best_loss)
 
-def summary_best_models():
-    model = vanilla()
+def fit_model(model, model_name, x_train, y_train, x_test, y_test):
     model.summary()
-    model = deep()
-    model.summary()
-    model = covnet()
-    model.summary()
+
+    r = model.fit(x_train, y_train, epochs=200, shuffle=True, validation_data=(x_test, y_test), callbacks=[early_stop()])
+
+    actual_epoch = len(r.history['loss'])
+    model_file = f'{actual_epoch}p-{model_name}-{round(min(r.history["loss"]),3)}'
+    model.save(f'models/mnist_accordion_classification_models/{model_file}.h5')
+
+    return r
 
 def main():
-    # summary_best_models()
     grid_search_mnist()
 
 

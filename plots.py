@@ -31,7 +31,7 @@ def plot_original_vs_reconstructed_imgs(parameters, original, reconstructed):
 # expecting data to be a list of {'loss': 0.366, 'decompression': 9, 'compression': 4, 'acc': 2}
 # want 4 different plots
 def plot_accordion_model_data(data):
-    plots = [plot_loss_vs_accordions, plot_loss_vs_d_c_difference, plot_loss_vs_compression, plot_loss_vs_decompression]
+    plots = [plot_accuracy_vs_accordions, plot_accuracy_vs_d_c_difference, plot_accuracy_vs_compression, plot_accuracy_vs_decompression]
 
     for i, plot in enumerate(plots):
         plt.subplot(2,2,i+1)
@@ -44,18 +44,28 @@ def plot_accordion_model_data(data):
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
     plt.title('Loss vs. Accordions')
-    plt.scatter([d['acc'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.scatter([d['accordions'] for d in data], [d['loss'] for d in data], s=7, c='red')
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Loss')
 
+def plot_accuracy_vs_accordions(data):
+    # naming goes y vs x
+    plt.title('Accuracy vs. Accordions')
+    plt.scatter([d['accordions'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Accordions')
+    plt.ylabel('Final Accuracy')
 
-# same data as plot_loss_vs_accordions
 def plot_loss_vs_d_c_difference(data):
     plt.title('Loss vs. Decompression - Compression')
     plt.scatter([d['decompression'] - d['compression'] for d in data], [d['loss'] for d in data], s=7, c='red')
     plt.xlabel('#Decompression Nodes - #Compression Nodes')
     plt.ylabel('Final Loss')
 
+def plot_accuracy_vs_d_c_difference(data):
+    plt.title('Accuracy vs. Decompression - Compression')
+    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.xlabel('#Decompression Nodes - #Compression Nodes')
+    plt.ylabel('Final Accuracy')
 
 def plot_loss_vs_compression(data):
     plt.title('Loss vs. Compression Nodes')
@@ -63,12 +73,23 @@ def plot_loss_vs_compression(data):
     plt.xlabel('Number of Compression Nodes')
     plt.ylabel('Final Loss')
 
+def plot_accuracy_vs_compression(data):
+    plt.title('Accuracy vs. Compression Nodes')
+    plt.scatter([d['compression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Compression Nodes')
+    plt.ylabel('Final Accuracy')
 
 def plot_loss_vs_decompression(data):
     plt.title('Loss vs. Decompression Nodes')
     plt.scatter([d['decompression'] for d in data], [d['loss'] for d in data], s=7, c='red')
     plt.xlabel('Number of Compression Nodes')
     plt.ylabel('Final Loss')
+
+def plot_accuracy_vs_decompression(data):
+    plt.title('Accuracy vs. Decompression Nodes')
+    plt.scatter([d['decompression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Compression Nodes')
+    plt.ylabel('Final Accuracy')
 
 
 def plot_loss_vs_epoch(data):

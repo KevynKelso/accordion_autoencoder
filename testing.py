@@ -1,3 +1,5 @@
+import sys
+
 from plots import *
 # want to test y axis = loss
 # x axis = number of accordions
@@ -15,18 +17,36 @@ def extract_data_from_name(name):
 
     return {"epoch": epoch, "loss": loss, "decompression": decompression, "compression": compression, "acc": acc}
 
+# file will be accordions, compressions, decompressions, loss, accuracy, val_loss, val_accuracy
+# want data to be a list of {'loss': 0.366, 'decompression': 9, 'compression': 4, 'acc': 2}
+def parse_csv_accordion_metrics(file_line):
+    data = file_line.split(',')
+    if len(data) != 7:
+        print(f'Error, expected data to have 7 elements, got {data}\n\n')
+        return
+
+    return {'accordions': int(data[0]), 'compression': int(data[1]),
+            'decompression': int(data[2]), 'loss': float(data[3]),
+            'accuracy': float(data[4]), 'val_loss': float(data[5]),
+            'val_accuracy': float(data[6]) }
+
 
 def main():
+    if len(sys.argv) < 2:
+        print('Usage: python3 testing.py <csv file>')
+        return
+
+    file_name = sys.argv[1]
     lines = []
-    with open('data.txt', 'r') as f:
+    with open(file_name, 'r') as f:
         lines = f.readlines()
 
     data = []
     for line in lines:
-        data.append(extract_data_from_name(line))
+        data.append(parse_csv_accordion_metrics(line))
 
     plot_accordion_model_data(data)
-    plot_loss_vs_epoch(data)
+    # plot_loss_vs_epoch(data)
 
 
 if __name__ == '__main__':
