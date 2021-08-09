@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -25,4 +26,55 @@ def plot_original_vs_reconstructed_imgs(parameters, original, reconstructed):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
     plt.savefig(f'{parameters["accordions"]}accords-{parameters["compression"]}c-{parameters["decompression"]}d.png')
+
+
+# expecting data to be a list of {'loss': 0.366, 'decompression': 9, 'compression': 4, 'acc': 2}
+# want 4 different plots
+def plot_accordion_model_data(data):
+    plots = [plot_loss_vs_accordions, plot_loss_vs_d_c_difference, plot_loss_vs_compression, plot_loss_vs_decompression]
+
+    for i, plot in enumerate(plots):
+        plt.subplot(2,2,i+1)
+        plot(data)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_loss_vs_accordions(data):
+    # naming goes y vs x
+    plt.title('Loss vs. Accordions')
+    plt.scatter([d['acc'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Accordions')
+    plt.ylabel('Final Loss')
+
+
+# same data as plot_loss_vs_accordions
+def plot_loss_vs_d_c_difference(data):
+    plt.title('Loss vs. Decompression - Compression')
+    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.xlabel('#Decompression Nodes - #Compression Nodes')
+    plt.ylabel('Final Loss')
+
+
+def plot_loss_vs_compression(data):
+    plt.title('Loss vs. Compression Nodes')
+    plt.scatter([d['compression'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Compression Nodes')
+    plt.ylabel('Final Loss')
+
+
+def plot_loss_vs_decompression(data):
+    plt.title('Loss vs. Decompression Nodes')
+    plt.scatter([d['decompression'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Compression Nodes')
+    plt.ylabel('Final Loss')
+
+
+def plot_loss_vs_epoch(data):
+    plt.title('Loss vs. Number of Epoch')
+    plt.scatter([d['epoch'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.xlabel('Number of Epoch')
+    plt.ylabel('Final Loss')
+    plt.show()
 

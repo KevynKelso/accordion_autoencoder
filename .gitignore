@@ -2,6 +2,8 @@ models/**
 __pycache__/**
 data/*
 *.png
+*.txt
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
