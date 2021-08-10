@@ -1,4 +1,5 @@
 import sys
+import random
 
 from plots import *
 # want to test y axis = loss
@@ -16,6 +17,34 @@ def extract_data_from_name(name):
     epoch = int(name.split('-')[0].replace('p', ''))
 
     return {"epoch": epoch, "loss": loss, "decompression": decompression, "compression": compression, "acc": acc}
+
+def assign_colors_to_tracked_data_points(key, data):
+    colors = ['#C71585', '#8B0000', '#FFA07A', '#FF8C00', '#BDB76B', '#FFD700', '#000080', '#0000FF', '#B0C4DE', '#E0FFFF', '#006400', '#808000', '#00FF00']
+    if key not in data[0].keys():
+        print(f'Error, {key} not in data.')
+        return
+
+    value_to_track = data[0][key]
+    keys = ['accordions', 'compression', 'decompression']
+    keys.remove(key)
+
+    for d in data:
+        if d[key] == value_to_track:
+            if len(colors) == 0:
+                color = "#%06x" % random.randint(0, 0xFFFFFF)
+            else:
+                color = colors[0]
+                colors.remove(color)
+
+            val1 = d[keys[0]]
+            val2 = d[keys[1]]
+            for d2 in data:
+                if d2[keys[0]] == val1 and d2[keys[1]] == val2:
+                    d2['color'] = color
+
+    return data
+
+
 
 # file will be accordions, compressions, decompressions, loss, accuracy, val_loss, val_accuracy, eval_loss, eval_accuracy, eval_val_loss, eval_val_accuracy
 # want data to be a list of {'loss': 0.366, 'decompression': 9, 'compression': 4, 'acc': 2}
@@ -48,8 +77,9 @@ def main():
     for line in lines:
         data.append(parse_csv_accordion_metrics(line))
 
+
     plot_accordion_model_data(data)
-    plot_accuracy_by_model_and_eval_model(data)
+    # plot_accuracy_by_model_and_eval_model(data)
     # plot_loss_vs_epoch(data)
 
 

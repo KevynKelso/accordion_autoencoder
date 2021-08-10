@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from testing import assign_colors_to_tracked_data_points
+
 
 def plot_original_vs_reconstructed_imgs(parameters, original, reconstructed):
     n = 10 # 20 digits to display
@@ -56,57 +58,60 @@ def plot_accuracy_by_model_and_eval_model(data):
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
     plt.title('Loss vs. Accordions')
-    plt.scatter([d['accordions'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.scatter([d['accordions'] for d in data], [d['loss'] for d in data], s=10, c='red')
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_accordions(data):
+    data = assign_colors_to_tracked_data_points('accordions', data)
     # models will be linked if they have the same number of other parameters.
     plt.title('Validation Accuracy vs. Accordions')
-    plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
+    plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_d_c_difference(data):
     plt.title('Loss vs. Decompression - Compression')
-    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['loss'] for d in data], s=10, c='red')
     plt.xlabel('#Decompression Nodes - #Compression Nodes')
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_d_c_difference(data):
     plt.title('Validation Accuracy vs. Decompression - Compression')
-    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
+    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['val_accuracy'] for d in data], s=10, c='red')
     plt.xlabel('#Decompression Nodes - #Compression Nodes')
     plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_compression(data):
     plt.title('Loss vs. Compression Nodes')
-    plt.scatter([d['compression'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.scatter([d['compression'] for d in data], [d['loss'] for d in data], s=10, c='red')
     plt.xlabel('Number of Compression Nodes')
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_compression(data):
+    data = assign_colors_to_tracked_data_points('compression', data)
     plt.title('Validation Accuracy vs. Compression Nodes')
-    plt.scatter([d['compression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
+    plt.scatter([d['compression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
     plt.xlabel('Number of Compression Nodes')
     plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_decompression(data):
     plt.title('Loss vs. Decompression Nodes')
-    plt.scatter([d['decompression'] for d in data], [d['loss'] for d in data], s=7, c='red')
-    plt.xlabel('Number of Compression Nodes')
+    plt.scatter([d['decompression'] for d in data], [d['loss'] for d in data], s=10, c='red')
+    plt.xlabel('Number of Decompression Nodes')
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_decompression(data):
+    data = assign_colors_to_tracked_data_points('decompression', data)
     plt.title('Validation Accuracy vs. Decompression Nodes')
-    plt.scatter([d['decompression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
-    plt.xlabel('Number of Compression Nodes')
+    plt.scatter([d['decompression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    plt.xlabel('Number of Decompression Nodes')
     plt.ylabel('Final Validation Accuracy')
 
 
 def plot_loss_vs_epoch(data):
     plt.title('Loss vs. Number of Epoch')
-    plt.scatter([d['epoch'] for d in data], [d['loss'] for d in data], s=7, c='red')
+    plt.scatter([d['epoch'] for d in data], [d['loss'] for d in data], s=10, c='red')
     plt.xlabel('Number of Epoch')
     plt.ylabel('Final Loss')
     plt.show()
