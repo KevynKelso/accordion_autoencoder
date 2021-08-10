@@ -40,6 +40,18 @@ def plot_accordion_model_data(data):
     plt.tight_layout()
     plt.show()
 
+def plot_accuracy_by_model_and_eval_model(data):
+    N = len(data)
+    model_accuracy = [d["accuracy"] for d in data]
+    eval_model_accuracy = [d["eval_accuracy"] for d in data]
+    ind = np.arange(N)
+    width = 0.35
+    plt.bar(ind, model_accuracy, width, label='Accordion Model')
+    plt.bar(ind + width, eval_model_accuracy, width, label='Flattened Model')
+    plt.ylabel('Accuracy')
+    plt.title('Accuracy by model and model type')
+    plt.legend(loc='best')
+    plt.show()
 
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
@@ -49,11 +61,11 @@ def plot_loss_vs_accordions(data):
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_accordions(data):
-    # naming goes y vs x
-    plt.title('Accuracy vs. Accordions')
-    plt.scatter([d['accordions'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    # models will be linked if they have the same number of other parameters.
+    plt.title('Validation Accuracy vs. Accordions')
+    plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
     plt.xlabel('Number of Accordions')
-    plt.ylabel('Final Accuracy')
+    plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_d_c_difference(data):
     plt.title('Loss vs. Decompression - Compression')
@@ -62,10 +74,10 @@ def plot_loss_vs_d_c_difference(data):
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_d_c_difference(data):
-    plt.title('Accuracy vs. Decompression - Compression')
-    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.title('Validation Accuracy vs. Decompression - Compression')
+    plt.scatter([d['decompression'] - d['compression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
     plt.xlabel('#Decompression Nodes - #Compression Nodes')
-    plt.ylabel('Final Accuracy')
+    plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_compression(data):
     plt.title('Loss vs. Compression Nodes')
@@ -74,10 +86,10 @@ def plot_loss_vs_compression(data):
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_compression(data):
-    plt.title('Accuracy vs. Compression Nodes')
-    plt.scatter([d['compression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.title('Validation Accuracy vs. Compression Nodes')
+    plt.scatter([d['compression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
     plt.xlabel('Number of Compression Nodes')
-    plt.ylabel('Final Accuracy')
+    plt.ylabel('Final Validation Accuracy')
 
 def plot_loss_vs_decompression(data):
     plt.title('Loss vs. Decompression Nodes')
@@ -86,10 +98,10 @@ def plot_loss_vs_decompression(data):
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_decompression(data):
-    plt.title('Accuracy vs. Decompression Nodes')
-    plt.scatter([d['decompression'] for d in data], [d['accuracy'] for d in data], s=7, c='red')
+    plt.title('Validation Accuracy vs. Decompression Nodes')
+    plt.scatter([d['decompression'] for d in data], [d['val_accuracy'] for d in data], s=7, c='red')
     plt.xlabel('Number of Compression Nodes')
-    plt.ylabel('Final Accuracy')
+    plt.ylabel('Final Validation Accuracy')
 
 
 def plot_loss_vs_epoch(data):

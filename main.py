@@ -16,8 +16,8 @@ def grid_search_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
     accodions_to_test = [2, 3, 4, 5, 6]
-    compressions_to_test = [32, 48, 64]
-    decompression_to_test = [48, 64, 128, 256]
+    compressions_to_test = [4, 8, 16]
+    decompression_to_test = [512, 1024]
 
     parameters = {
             "accordions": 2,
