@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 import random
 
 from plots import *
@@ -26,6 +27,7 @@ def assign_colors_to_tracked_data_points(key, data):
 
     value_to_track = data[0][key]
     keys = ['accordions', 'compression', 'decompression']
+    labels = []
     keys.remove(key)
 
     for d in data:
@@ -41,6 +43,12 @@ def assign_colors_to_tracked_data_points(key, data):
             for d2 in data:
                 if d2[keys[0]] == val1 and d2[keys[1]] == val2:
                     d2['color'] = color
+                    d2['label'] = ""
+
+                    label = f'{d2[keys[0]]} {keys[0]} {d2[keys[1]]} {keys[1]}'
+                    if label not in labels:
+                        d2['label'] = label
+                        labels.append(label)
 
     return data
 
@@ -78,7 +86,17 @@ def main():
         data.append(parse_csv_accordion_metrics(line))
 
 
-    plot_accordion_model_data(data)
+    # plt.style.use('dark_background')
+    # plot_accuracy_vs_accordions(data)
+    plot_accuracy_vs_d_c_difference(data)
+    plt.show()
+    plot_accuracy_vs_compression(data)
+    plt.tight_layout()
+    plt.show()
+    plot_accuracy_vs_decompression(data)
+    plt.tight_layout()
+    plt.show()
+    # plot_accordion_model_data(data)
     # plot_accuracy_by_model_and_eval_model(data)
     # plot_loss_vs_epoch(data)
 

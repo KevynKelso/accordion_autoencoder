@@ -1,6 +1,5 @@
 # MNIST Classifier
 import tensorflow as tf
-import math
 
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -36,3 +35,17 @@ def eval_accordion_mnist_classifier(model_name, accordions, compression, decompr
 
     return eval_model
 
+def baseline_classifier_ae():
+    input_img = keras.Input(shape=(784,))
+    encoded = layers.Dense(128, activation='relu')(input_img)
+    encoded = layers.Dense(64, activation='relu')(encoded)
+    encoded = layers.Dense(32, activation='relu')(encoded)
+
+    decoded = layers.Dense(64, activation='relu')(encoded)
+    decoded = layers.Dense(128, activation='relu')(decoded)
+    decoded = layers.Dense(10, activation='softmax')(decoded)
+
+    model = keras.Model(input_img, decoded)
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+    return model

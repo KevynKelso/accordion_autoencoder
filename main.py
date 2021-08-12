@@ -71,7 +71,16 @@ def fit_model(model, model_name, x_train, y_train, x_test, y_test):
     return r
 
 def main():
-    grid_search_mnist()
+    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+    model_name = f'best_fraud_architecture'
+    model = accordion_mnist_classifier(model_name, 2, 4, 9)
+    r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
+
+    with open("fraud_to_mnist_tuning.csv", "a") as f:
+        f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                f'{max(r.history["val_accuracy"])}\n')
+
+    # grid_search_mnist()
 
 
 if __name__ == '__main__':

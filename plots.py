@@ -66,9 +66,13 @@ def plot_accuracy_vs_accordions(data):
     data = assign_colors_to_tracked_data_points('accordions', data)
     # models will be linked if they have the same number of other parameters.
     plt.title('Validation Accuracy vs. Accordions')
-    plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    for d in data:
+        plt.scatter(d['accordions'], d['val_accuracy'], s=10, c=d['color'], label=d['label'])
+    # plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data], label=[d['label'] for d in data])
+    plt.legend(bbox_to_anchor=(1.05, 0.5, 0.3, 0.2), loc='upper left')
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Validation Accuracy')
+    plt.tight_layout()
 
 def plot_loss_vs_d_c_difference(data):
     plt.title('Loss vs. Decompression - Compression')
@@ -91,7 +95,10 @@ def plot_loss_vs_compression(data):
 def plot_accuracy_vs_compression(data):
     data = assign_colors_to_tracked_data_points('compression', data)
     plt.title('Validation Accuracy vs. Compression Nodes')
-    plt.scatter([d['compression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    for d in data:
+        plt.scatter(d['compression'], d['val_accuracy'], s=10, c=d['color'], label=d['label'])
+    # plt.scatter([d['compression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    plt.legend(bbox_to_anchor=(1.05, 0.5, 0.3, 0.2), loc='upper left')
     plt.xlabel('Number of Compression Nodes')
     plt.ylabel('Final Validation Accuracy')
 
@@ -104,7 +111,10 @@ def plot_loss_vs_decompression(data):
 def plot_accuracy_vs_decompression(data):
     data = assign_colors_to_tracked_data_points('decompression', data)
     plt.title('Validation Accuracy vs. Decompression Nodes')
-    plt.scatter([d['decompression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    for d in data:
+        plt.scatter(d['decompression'], d['val_accuracy'], s=10, c=d['color'], label=d['label'])
+    # plt.scatter([d['decompression'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data])
+    plt.legend(bbox_to_anchor=(1.05, 0.5, 0.3, 0.2), loc='upper left')
     plt.xlabel('Number of Decompression Nodes')
     plt.ylabel('Final Validation Accuracy')
 
