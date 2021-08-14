@@ -50,3 +50,17 @@ def baseline_classifier_ae(x, x2):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     return model
+
+def baseline_classifier_ae_3l(x):
+    input_img = keras.Input(shape=(784,))
+    encoded = layers.Dense(x, activation='relu')(input_img)
+
+    encoded = layers.Dense(32, activation='relu')(encoded)
+
+    decoded = layers.Dense(x, activation='relu')(encoded)
+    decoded = layers.Dense(10, activation='softmax')(decoded)
+
+    model = keras.Model(input_img, decoded)
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+    return model
