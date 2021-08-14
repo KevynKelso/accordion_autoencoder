@@ -49,12 +49,12 @@ def grid_search_mnist():
 def parameter_tuning_baseline():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    for i in range(32, 65):
+    for i in range(1, 32):
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
-        model_name = f'baseline_l64->{i}'
-        model = baseline_classifier_ae(32, i)
+        model_name = f'baseline_l128->{i}'
+        model = baseline_classifier_ae(i, 64)
 
         r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 

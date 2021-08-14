@@ -55,6 +55,10 @@ def plot_accuracy_by_model_and_eval_model(data):
     plt.legend(loc='best')
     plt.show()
 
+def plot_accuracy_vs_l128_nodes(data):
+    plt.title('Accuracy vs. Number of Nodes in 1st Compression Layer')
+    plt.bar(data['l128_nodes'], data['val_accuracy'])
+
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
     plt.title('Loss vs. Accordions')
