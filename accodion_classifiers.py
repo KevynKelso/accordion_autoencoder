@@ -35,14 +35,14 @@ def eval_accordion_mnist_classifier(model_name, accordions, compression, decompr
 
     return eval_model
 
-def baseline_classifier_ae(x):
+def baseline_classifier_ae(x, x2):
     input_img = keras.Input(shape=(784,))
-    encoded = layers.Dense(x, activation='relu')(input_img)
-    encoded = layers.Dense(64, activation='relu')(encoded)
+    encoded = layers.Dense(x, activation='relu')(input_img) # 128
+    encoded = layers.Dense(x2, activation='relu')(encoded)
 
     encoded = layers.Dense(32, activation='relu')(encoded)
 
-    decoded = layers.Dense(64, activation='relu')(encoded)
+    decoded = layers.Dense(x2, activation='relu')(encoded)
     decoded = layers.Dense(x, activation='relu')(decoded)
     decoded = layers.Dense(10, activation='softmax')(decoded)
 

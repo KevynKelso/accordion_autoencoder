@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from testing import assign_colors_to_tracked_data_points
+from plots_utils import assign_colors_to_tracked_data_points
 
 
 def plot_original_vs_reconstructed_imgs(parameters, original, reconstructed):
@@ -58,17 +58,16 @@ def plot_accuracy_by_model_and_eval_model(data):
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
     plt.title('Loss vs. Accordions')
-    plt.scatter([d['accordions'] for d in data], [d['loss'] for d in data], s=10, c='red')
+    plt.scatter(data['accordions'], data['loss'], s=10, c='red')
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Loss')
 
 def plot_accuracy_vs_accordions(data):
-    data = assign_colors_to_tracked_data_points('accordions', data)
     # models will be linked if they have the same number of other parameters.
     plt.title('Validation Accuracy vs. Accordions')
-    for d in data:
-        plt.scatter(d['accordions'], d['val_accuracy'], s=10, c=d['color'], label=d['label'])
-    # plt.scatter([d['accordions'] for d in data], [d['val_accuracy'] for d in data], s=10, c=[d['color'] for d in data], label=[d['label'] for d in data])
+    # for d in data:
+        # plt.scatter(d['accordions'], d['val_accuracy'], s=10, c=d['color'], label=d['label'])
+    plt.scatter(data['accordions'], data['accuracy'], s=10, c=data['color'])
     plt.legend(bbox_to_anchor=(1.05, 0.5, 0.3, 0.2), loc='upper left')
     plt.xlabel('Number of Accordions')
     plt.ylabel('Final Validation Accuracy')
