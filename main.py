@@ -53,8 +53,8 @@ def parameter_tuning_baseline():
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
-        model_name = f'baseline_l128->{i}'
-        model = baseline_classifier_ae(i, 64)
+        model_name = f'baseline_l64->{i}'
+        model = baseline_classifier_ae(128, i)
 
         r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 

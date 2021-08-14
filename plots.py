@@ -57,6 +57,7 @@ def plot_accuracy_by_model_and_eval_model(data):
 
 def plot_accuracy_vs_l128_nodes(data):
     plt.title('Accuracy vs. Number of Nodes in 1st Compression Layer')
+    plt.ylim((0.95, 1))
     plt.bar(data['l128_nodes'], data['val_accuracy'])
 
 def plot_loss_vs_accordions(data):
