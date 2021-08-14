@@ -16,7 +16,7 @@ def grid_search_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
     accodions_to_test = [2]
-    compressions_to_test = [5, 6, 7, 8, 9]
+    compressions_to_test = [32]
     decompression_to_test = [10, 11, 12, 13, 14, 15, 16]
 
     parameters = {
@@ -41,9 +41,26 @@ def grid_search_mnist():
                 model = accordion_mnist_classifier(model_name, parameters["accordions"], parameters["compression"], parameters["decompression"])
                 r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
-                with open("fraud_to_mnist_tuning.csv", "a") as f:
+                with open("baseline_tuning.csv", "a") as f:
                     f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                             f'{max(r.history["val_accuracy"])}\n')
+
+
+def parameter_tuning_baseline():
+    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+
+    for i in range(32, 129):
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
+        model_name = f'baseline_l128->{i}'
+        model = baseline_classifier_ae(i)
+
+        r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
+
+        with open("baseline_tuning.csv", "a") as f:
+            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                    f'{max(r.history["val_accuracy"])}\n')
 
 
 
@@ -59,7 +76,8 @@ def fit_model(model, model_name, x_train, y_train, x_test, y_test):
     return r
 
 def main():
-    grid_search_mnist()
+    # grid_search_mnist()
+    parameter_tuning_baseline()
 
 
 if __name__ == '__main__':
