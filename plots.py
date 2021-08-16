@@ -1,5 +1,6 @@
-import numpy as np
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import numpy as np
 
 from plots_utils import assign_colors_to_tracked_data_points
 
@@ -55,10 +56,17 @@ def plot_accuracy_by_model_and_eval_model(data):
     plt.legend(loc='best')
     plt.show()
 
-def plot_accuracy_vs_l128_nodes(data):
-    plt.title('Accuracy vs. Number of Nodes in 1st Compression Layer')
-    plt.ylim((0.95, 1))
-    plt.bar(data['l128_nodes'], data['val_accuracy'])
+def plot_accuracy_vs_layer_nodes(data, layer_nodes):
+    plt.title('Accuracy vs. Number of Nodes in 1st Compression Layer (3 layer network)')
+    plt.ylim((90, 100))
+    plt.xticks(np.arange(0,int(layer_nodes)+1,5))
+    plt.xlabel('Number of nodes')
+    plt.ylabel('Accuracy (%)')
+    plt.bar(data[f'l{layer_nodes}_nodes'], data['val_accuracy']*100, color=data['color'])
+    blue_patch = mpatches.Patch(color='#003f5c', label='Modified Model')
+    red_patch = mpatches.Patch(color='#bc5090', label='Baseline Model')
+    plt.legend(handles=[red_patch, blue_patch])
+
 
 def plot_loss_vs_accordions(data):
     # naming goes y vs x

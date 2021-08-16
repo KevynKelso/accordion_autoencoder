@@ -77,7 +77,12 @@ def fit_model(model, model_name, x_train, y_train, x_test, y_test):
 
 def main():
     # grid_search_mnist()
-    parameter_tuning_baseline()
+    # parameter_tuning_baseline()
+    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+
+    model_name = f'putting-it-all-together-27-10'
+    model = baseline_classifier_ae(27, 10)
+    r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
 
 if __name__ == '__main__':
