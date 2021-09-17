@@ -56,8 +56,8 @@ def plot_accuracy_by_model_and_eval_model(data):
     plt.legend(loc='best')
     plt.show()
 
-def plot_accuracy_vs_layer_nodes(data, layer_nodes):
-    plt.title('Accuracy vs. Number of Nodes in 1st Compression Layer (3 layer network)')
+def plot_accuracy_vs_layer_nodes(data, layer_nodes, title):
+    plt.title(title)
     plt.ylim((90, 100))
     plt.xticks(np.arange(0,int(layer_nodes)+1,5))
     plt.xlabel('Number of nodes')
@@ -65,8 +65,16 @@ def plot_accuracy_vs_layer_nodes(data, layer_nodes):
     plt.bar(data[f'l{layer_nodes}_nodes'], data['val_accuracy']*100, color=data['color'])
     blue_patch = mpatches.Patch(color='#003f5c', label='Modified Model')
     red_patch = mpatches.Patch(color='#bc5090', label='Baseline Model')
-    plt.legend(handles=[red_patch, blue_patch])
+    orange_patch = mpatches.Patch(color='#ff7c43', label='Accordion Model')
+    plt.legend(handles=[red_patch, blue_patch, orange_patch])
 
+# expecting accuracies to be an array of length 2
+def plot_mean_accuracy_vs_model_type(mean_accuracies):
+    plt.title('Mean Accuracy Accordion vs. Baseline Models')
+    plt.ylim((90,100))
+    plt.ylabel('Accuracy (%)')
+    plt.xlabel('Model Type')
+    plt.bar(['Baseline', 'Accordion'], np.array(mean_accuracies)*100, color=['#bc5090', '#003f5c'])
 
 def plot_loss_vs_accordions(data):
     # naming goes y vs x
