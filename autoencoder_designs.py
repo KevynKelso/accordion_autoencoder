@@ -3,6 +3,25 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+def baseline_fraud():
+    input_dim = 29
+    return tf.keras.models.Sequential([
+
+    # deconstruct / encode
+    tf.keras.layers.Dense(input_dim, activation='elu', input_shape=(input_dim, )),
+    tf.keras.layers.Dense(16, activation='elu'),
+    tf.keras.layers.Dense(8, activation='elu'),
+    tf.keras.layers.Dense(4, activation='elu'),
+    tf.keras.layers.Dense(2, activation='elu'),
+
+    # reconstruction / decode
+    tf.keras.layers.Dense(4, activation='elu'),
+    tf.keras.layers.Dense(8, activation='elu'),
+    tf.keras.layers.Dense(16, activation='elu'),
+    tf.keras.layers.Dense(input_dim, activation='elu')
+
+])
+
 def accordion_sequential(input_dim, accordions=1, compression=1, decompression=1):
     model = tf.keras.Sequential(name=f'accordion{accordions:02}')
     model.add(tf.keras.layers.Dense(input_dim, activation='relu', input_shape=(input_dim,)))

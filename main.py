@@ -1,16 +1,11 @@
-import numpy as np
-import pandas as pd
 import tensorflow as tf
-import itertools
 
-from creditcarddata import get_creditcard_data_normalized
 from autoencoder_designs import *
 from accodion_classifiers import *
 from accordion_mnist import get_formatted_mnist_classification_data
 from tf_utils import early_stop
 from plots import *
 
-from sklearn.model_selection import GridSearchCV
 
 def grid_search_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
@@ -25,7 +20,6 @@ def grid_search_mnist():
             "decompression": 64,
     }
 
-    best_loss = 1
     for acc in accodions_to_test:
         parameters["accordions"] = acc
         for comp in compressions_to_test:
@@ -49,12 +43,12 @@ def grid_search_mnist():
 def parameter_tuning_baseline():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    for i in range(1, 129):
+    for i in range(65, 129):
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
-        model_name = f'3_layer128l->{i}'
-        model = baseline_classifier_ae_3l(i)
+        model_name = f'baseline_l64->{i}'
+        model = baseline_classifier_ae(128, i)
 
         r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
@@ -75,14 +69,19 @@ def fit_model(model, model_name, x_train, y_train, x_test, y_test):
 
     return r
 
+def print_baseline_models():
+    baseline_classifier_ae(128, 64).summary()
+    baseline_fraud().summary()
+
 def main():
     # grid_search_mnist()
-    # parameter_tuning_baseline()
-    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+    parameter_tuning_baseline()
+    # print_baseline_models()
+    # (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    model_name = f'putting-it-all-together-27-10'
-    model = baseline_classifier_ae(27, 10)
-    r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
+    # model_name = f'putting-it-all-together-27-10'
+    # model = baseline_classifier_ae(27, 10)
+    # r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
 
 if __name__ == '__main__':
