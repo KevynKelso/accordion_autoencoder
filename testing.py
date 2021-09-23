@@ -3,8 +3,12 @@ import pandas as pd
 import sys
 
 from plots import *
+from plots_fraud import plot_model_f1
 
-def parse_layer_nodes_from_name(layer_nodes, df):
+blue = '#003f5c'
+red = '#bc5090'
+
+def parse_layer_nodes_from_name_mnist(layer_nodes, df):
     df[f'l{layer_nodes}_nodes'] = df['name'].apply(
             lambda x: int(x.split('>')[-1]) if f'l{layer_nodes}' in x else int(layer_nodes)
     )
@@ -14,16 +18,47 @@ def parse_layer_nodes_from_name(layer_nodes, df):
     )
 
     df['color'] = df[f'l{layer_nodes}_nodes'].apply(
-            lambda x: '#bc5090' if x == int(layer_nodes) else '#ff7c43' if x <= 32  else '#003f5c'
+            lambda x: red if x == int(layer_nodes) else '#ff7c43' if x <= 32  else blue
     )
 
     return df
 
+def parse_layer_nodes_from_name_fraud(layer_nodes, df):
+    df[layer_nodes] = df['name'].apply(
+            lambda x: int(x.split('>')[-1]) if f'' in x else int(layer_nodes)
+    )
+
+    return df
+
+def dataframe_preprocessing_fraud(df, baseline_param):
+    df['change_node'] = df['name'].apply(lambda x: int(x.split('>')[-1]))
+
+    df['color'] = df['change_node'].apply(
+            lambda x: red if x == baseline_param else blue
+    )
+
+    return df
+
+
+def get_rows_matching_name_pattern(name_pattern, df):
+    return df[df['name'].str.contains(name_pattern)]
+
+# Not sure if this is useful
 def process_data_and_plot_acc_vs_model_type(df):
     median_model_accs = df.groupby('accordion', as_index=False)['val_accuracy'].median()
 
     # Baseline, Accordion is returned
     return median_model_accs['val_accuracy'].tolist()
+
+def plot_all_metrics_fraud(df):
+    opt1 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-x-4-2-4-x-4',df), 8)
+    print(opt1)
+    opt2 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
+    opt3 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
+
+    # plot_model_f1(opt1, '4-x-4-2-4-x-4 F1 Scores')
+    # plot_model_f1(opt2, '4-9-x-2-x-9-4 F1 Scores')
+    plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
 
 
 def main():
@@ -34,24 +69,16 @@ def main():
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
 
-    df = parse_layer_nodes_from_name('64', df)
-    plot_mean_accuracy_vs_model_type(process_data_and_plot_acc_vs_model_type(df))
-    plt.show()
+    plot_all_metrics_fraud(df)
 
-    # df['decompression'] = df['name'].apply(lambda x: int(x.split('-')[-1]))
-    # df['compression'] = df['name'].apply(lambda x: int(x.split('-')[-2]))
-    # df['accordions'] = df['name'].apply(
-            # lambda x: int(re.sub('[a-zA-Z_]', '', x.split('-')[-3]))
-    # )
 
-    # colors = ['#C71585', '#8B0000', '#FFA07A', '#FF8C00', '#BDB76B', '#FFD700', '#000080', '#0000FF', '#B0C4DE', '#E0FFFF', '#006400', '#808000', '#00FF00']
-    # df['color'] = df['decompression'].apply(
-            # lambda deco: colors[deco % len(colors)]
-        # )
-        #'Accuracy vs. Number of Nodes in 1st Compression Layer (3 layer network)'
+    # get_rows_matching_name_pattern('4-x-4-2-4-x-4',df)
 
-    plot_accuracy_vs_layer_nodes(df, '64', 'Accuracy vs. Number of Nodes Changed in Layer 2 and 4')
-    plt.show()
+    # df = parse_layer_nodes_from_name_mnist('layer', df)
+
+
+    # plot_accuracy_vs_layer_nodes_mnist(df, '64', 'Accuracy vs. Number of Nodes Changed in Layer 2 and 4')
+    # plt.show()
 
 if __name__ == '__main__':
     main()

@@ -56,7 +56,7 @@ def plot_accuracy_by_model_and_eval_model(data):
     plt.legend(loc='best')
     plt.show()
 
-def plot_accuracy_vs_layer_nodes(data, layer_nodes, title):
+def plot_accuracy_vs_layer_nodes_mnist(data, layer_nodes, title):
     plt.title(title)
     plt.ylim((90, 100))
     plt.xticks(np.arange(0,128+1,10))
