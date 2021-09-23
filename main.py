@@ -69,7 +69,7 @@ def parameter_tuning_baseline_mnist():
 def parameter_tuning_baseline_fraud():
     training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
 
-    for i in range(1, 64):
+    for i in range(1, 25):
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
@@ -80,13 +80,13 @@ def parameter_tuning_baseline_fraud():
 
         r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
 
+        precision, recall, f1 = test_model(model, training_data, validation_data, testing_data, y_data)
         trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
 
         # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
         with open("baseline_tuning_fraud.csv", "a") as f:
             f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                    f'{max(r.history["val_accuracy"])}\n')
-
+                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
 
 
 def print_baseline_models():
@@ -105,8 +105,6 @@ def test_model(model, training_data, validation_data, testing_data, y_data):
     THRESHOLD = 3
 
     outliers = z_scores > THRESHOLD
-
-    cm = confusion_matrix(y_data, outliers)
 
     precision = precision_score(y_data, outliers)
     recall = recall_score(y_data, outliers)
