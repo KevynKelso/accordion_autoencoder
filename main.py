@@ -123,7 +123,7 @@ def test_baseline():
 
 def main():
     # grid_search_mnist()
-    parameter_tuning_baseline_mnist()
+    parameter_tuning_baseline_fraud()
     # print_baseline_models()
     # test_baseline()
     # (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()

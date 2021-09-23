@@ -20,7 +20,7 @@ def baseline_fraud(x1,x2,x3,latent):
     tf.keras.layers.Dense(x1, activation='elu'),
     tf.keras.layers.Dense(input_dim, activation='elu')
 
-]).compile(optimizer='adam', loss='mse', metrics=['accuracy']
+]).compile(optimizer='adam', loss='mse', metrics=['accuracy'])
 
 # def accordion_sequential(input_dim, accordions=1, compression=1, decompression=1):
     # model = tf.keras.Sequential(name=f'accordion{accordions:02}')
