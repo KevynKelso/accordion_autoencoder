@@ -29,6 +29,51 @@ def parameter_tuning_baseline_mnist():
             f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                     f'{max(r.history["val_accuracy"])}\n')
 
+def delete_me():
+    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
+
+    tf.keras.backend.clear_session()
+    tf.compat.v1.reset_default_graph()
+
+    # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
+    model_name = f'baseline_4-9-x-2-x-9-4->25'
+    # model = baseline_fraud(4, i, 4, 2)
+    model = baseline_fraud(4, 9, 25, 2)
+
+    model.summary()
+
+    r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
+
+    precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
+
+    trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+
+    # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
+    with open("baseline_tuning_fraud.csv", "a") as f:
+        f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
+    tf.keras.backend.clear_session()
+    tf.compat.v1.reset_default_graph()
+
+    model_name = f'baseline_4-x-4-2-4-x-4->25'
+    # model_name = f'baseline_4-9-x-2-x-9-4->{i}'
+    model = baseline_fraud(4, 25, 4, 2)
+    # model = baseline_fraud(4, 9, 25, 2)
+
+    model.summary()
+
+    r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
+
+    precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
+
+    trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+
+    # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
+    with open("baseline_tuning_fraud.csv", "a") as f:
+        f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
 def parameter_tuning_baseline_fraud():
     training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
 
@@ -81,7 +126,8 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 
 def main():
     # grid_search_mnist()
-    parameter_tuning_baseline_fraud()
+    # parameter_tuning_baseline_fraud()
+    delete_me()
     # print_baseline_models()
     # test_baseline()
 
