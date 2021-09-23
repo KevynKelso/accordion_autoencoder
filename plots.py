@@ -59,7 +59,7 @@ def plot_accuracy_by_model_and_eval_model(data):
 def plot_accuracy_vs_layer_nodes(data, layer_nodes, title):
     plt.title(title)
     plt.ylim((90, 100))
-    plt.xticks(np.arange(0,int(layer_nodes)+1,5))
+    plt.xticks(np.arange(0,128+1,10))
     plt.xlabel('Number of nodes')
     plt.ylabel('Accuracy (%)')
     plt.bar(data[f'l{layer_nodes}_nodes'], data['val_accuracy']*100, color=data['color'])

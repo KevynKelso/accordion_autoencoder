@@ -34,7 +34,7 @@ def main():
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
 
-    df = parse_layer_nodes_from_name('128', df)
+    df = parse_layer_nodes_from_name('64', df)
     plot_mean_accuracy_vs_model_type(process_data_and_plot_acc_vs_model_type(df))
     plt.show()
 
@@ -50,7 +50,7 @@ def main():
         # )
         #'Accuracy vs. Number of Nodes in 1st Compression Layer (3 layer network)'
 
-    plot_accuracy_vs_layer_nodes(df, '128', 'Accuracy vs. Number of Nodes Changed in Layer 2 and Layer 4')
+    plot_accuracy_vs_layer_nodes(df, '64', 'Accuracy vs. Number of Nodes Changed in Layer 2 and 4')
     plt.show()
 
 if __name__ == '__main__':

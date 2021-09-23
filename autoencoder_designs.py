@@ -3,21 +3,21 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-def baseline_fraud():
+def baseline_fraud(x1,x2,x3,latent):
     input_dim = 29
     return tf.keras.models.Sequential([
 
     # deconstruct / encode
     tf.keras.layers.Dense(input_dim, activation='elu', input_shape=(input_dim, )),
-    tf.keras.layers.Dense(16, activation='elu'),
-    tf.keras.layers.Dense(8, activation='elu'),
-    tf.keras.layers.Dense(4, activation='elu'),
-    tf.keras.layers.Dense(2, activation='elu'),
+    tf.keras.layers.Dense(x1, activation='elu'),
+    tf.keras.layers.Dense(x2, activation='elu'),
+    tf.keras.layers.Dense(x3, activation='elu'),
+    tf.keras.layers.Dense(latent, activation='elu'),
 
     # reconstruction / decode
-    tf.keras.layers.Dense(4, activation='elu'),
-    tf.keras.layers.Dense(8, activation='elu'),
-    tf.keras.layers.Dense(16, activation='elu'),
+    tf.keras.layers.Dense(x3, activation='elu'),
+    tf.keras.layers.Dense(x2, activation='elu'),
+    tf.keras.layers.Dense(x1, activation='elu'),
     tf.keras.layers.Dense(input_dim, activation='elu')
 
 ])

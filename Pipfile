@@ -8,6 +8,7 @@ sklearn = "*"
 pandas = "*"
 tensorflow = "*"
 matplotlib = "*"
+click = "*"
 
 [dev-packages]
 

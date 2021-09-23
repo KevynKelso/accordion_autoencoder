@@ -3,8 +3,18 @@ import tensorflow as tf
 from autoencoder_designs import *
 from accodion_classifiers import *
 from accordion_mnist import get_formatted_mnist_classification_data
-from tf_utils import early_stop
+from tf_utils import early_stop, initialize_train
 from plots import *
+
+from sklearn.metrics import (confusion_matrix,
+                             precision_recall_curve,
+                             precision_score,
+                             recall_score,
+                             f1_score)
+
+from creditcarddata import get_creditcard_data_normalized
+from utils import mad_score
+
 
 
 def grid_search_mnist():
@@ -43,12 +53,12 @@ def grid_search_mnist():
 def parameter_tuning_baseline():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    for i in range(65, 129):
+    for i in range(1, 64):
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
-        model_name = f'baseline_l64->{i}'
-        model = baseline_classifier_ae(128, i)
+        model_name = f'baseline_l32->{i}'
+        model = baseline_classifier_ae(128, 64, i)
 
         r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
@@ -70,13 +80,42 @@ def fit_model(model, model_name, x_train, y_train, x_test, y_test):
     return r
 
 def print_baseline_models():
-    baseline_classifier_ae(128, 64).summary()
-    baseline_fraud().summary()
+    baseline_fraud(4,9,4,2).summary()
+    baseline_classifier_ae(128, 64, 32).summary()
+
+def test_model(model, training_data, validation_data, testing_data, y_data):
+    model.summary()
+    decoded_data = model.predict(testing_data)
+
+    if len(decoded_data.shape) == 3: # covnet data
+        decoded_data = decoded_data.reshape(len(decoded_data), 30)
+
+    mse = np.mean(np.power(testing_data - decoded_data, 2), axis=1)
+
+    z_scores = mad_score(mse)
+    THRESHOLD = 3
+
+    outliers = z_scores > THRESHOLD
+
+    cm = confusion_matrix(y_data, outliers)
+
+    print(precision_score(y_data, outliers))
+    print(recall_score(y_data, outliers))
+    print(f1_score(y_data, outliers))
+
+def test_baseline():
+    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
+
+    model = baseline_fraud()
+    initialize_train(model, training_data, validation_data, loss='mse', model_name=f'Baseline_1', num_epoch=100)
+
+    test_model(model, training_data, validation_data, testing_data, y_data)
 
 def main():
     # grid_search_mnist()
-    parameter_tuning_baseline()
-    # print_baseline_models()
+    # parameter_tuning_baseline()
+    print_baseline_models()
+    # test_baseline()
     # (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
     # model_name = f'putting-it-all-together-27-10'
