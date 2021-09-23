@@ -23,7 +23,7 @@ def fit_model_fraud(model, training_data, validation_data, model_name, noisy=0.0
 
     r = model.fit(training_data_noisy, training_data, epochs=num_epoch, batch_size=256, shuffle=True,
             validation_data=(validation_data_noisy, validation_data),
-            callbacks=[early_stop])
+            callbacks=[early_stop()])
 
     actual_epoch = len(r.history['loss'])
     model_file = f'{actual_epoch}p-{model_name}-{round(min(r.history["loss"]),3)}'
