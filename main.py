@@ -36,8 +36,10 @@ def parameter_tuning_baseline_fraud():
         tf.keras.backend.clear_session()
         tf.compat.v1.reset_default_graph()
 
-        model_name = f'baseline_4-x-4-2-4-x-4->{i}'
-        model = baseline_fraud(4, i, 4, 2)
+        # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
+        model_name = f'baseline_4-9-x-2-x-9-4->{i}'
+        # model = baseline_fraud(4, i, 4, 2)
+        model = baseline_fraud(4, 9, i, 2)
 
         model.summary()
 
@@ -60,8 +62,9 @@ def print_baseline_models():
 def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
     decoded_data = model.predict(testing_data)
 
-    if len(decoded_data.shape) == 3: # covnet data
-        decoded_data = decoded_data.reshape(len(decoded_data), 30)
+    # Not sure if this is needed
+    # if len(decoded_data.shape) == 3: # covnet data
+        # decoded_data = decoded_data.reshape(len(decoded_data), 30)
 
     mse = np.mean(np.power(testing_data - decoded_data, 2), axis=1)
 
@@ -81,11 +84,6 @@ def main():
     parameter_tuning_baseline_fraud()
     # print_baseline_models()
     # test_baseline()
-    # (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
-
-    # model_name = f'putting-it-all-together-27-10'
-    # model = baseline_classifier_ae(27, 10)
-    # r = fit_model(model, model_name, x_train, y_train, x_test, y_test)
 
 
 if __name__ == '__main__':

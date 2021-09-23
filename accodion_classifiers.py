@@ -65,6 +65,7 @@ def baseline_fraud(x1,x2,x3,latent):
     decoded = layers.Dense(x3, activation='elu')(encoded)
     decoded = layers.Dense(x2, activation='elu')(decoded)
     decoded = layers.Dense(x1, activation='elu')(decoded)
+
     decoded = layers.Dense(29, activation='elu')(decoded)
 
     model = keras.Model(input_vec, decoded)
