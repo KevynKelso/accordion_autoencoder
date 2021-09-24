@@ -52,13 +52,14 @@ def process_data_and_plot_acc_vs_model_type(df):
 
 def plot_all_metrics_fraud(df):
     opt1 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-x-4-2-4-x-4',df), 8)
-    print(opt1)
     opt2 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
     opt3 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
+    opt4 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-2-x-2-x-2-4',df), 4)
 
     # plot_model_f1(opt1, '4-x-4-2-4-x-4 F1 Scores')
     # plot_model_f1(opt2, '4-9-x-2-x-9-4 F1 Scores')
-    plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
+    # plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
+    plot_model_f1(opt4, '4-2-x-2-x-2-4 F1 Scores')
 
 
 def main():

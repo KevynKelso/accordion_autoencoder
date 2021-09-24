@@ -38,9 +38,9 @@ def parameter_tuning_baseline_fraud():
 
         # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
         # model_name = f'baseline_4-9-x-2-x-9-4->{i}'
-        model_name = f'baseline_4-2-x-2-x-2-4{i}'
-        # model = baseline_fraud(4, i, 4, 2)
-        model = baseline_fraud(4, 2, i, 2)
+        # model_name = f'baseline_4-2-x-2-x-2-4->{i}'
+        model_name = f'baseline_4-2-6-x-6-2-4->{i}'
+        model = baseline_fraud(4, 2, 6, i)
 
         model.summary()
 
@@ -57,15 +57,11 @@ def parameter_tuning_baseline_fraud():
 
 
 def print_baseline_models():
-    baseline_fraud(16,8,4,2).summary()
-    baseline_mnist(128, 64, 32).summary()
+    baseline_fraud(4,2,4,2).summary()
+    # baseline_mnist(128, 64, 32).summary()
 
 def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
     decoded_data = model.predict(testing_data)
-
-    # Not sure if this is needed
-    # if len(decoded_data.shape) == 3: # covnet data
-        # decoded_data = decoded_data.reshape(len(decoded_data), 30)
 
     mse = np.mean(np.power(testing_data - decoded_data, 2), axis=1)
 
