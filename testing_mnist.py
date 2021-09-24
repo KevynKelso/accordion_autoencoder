@@ -31,15 +31,16 @@ def main():
         model = tf.keras.models.load_model(model_file)
         model.summary()
 
-        x_test_pred = model.predict(x_test)
+        y_test_pred = model.predict(x_test)
+        print(y_test_pred[0])
 
         # parameters for csv need: name,val_loss,val_accuracy,precision,recall,f1,complexity
         model_name = get_model_name(model_file)
         trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
 
-        precision = precision_score(x_test, x_test_pred)
-        recall = recall_score(x_test, x_test_pred)
-        f1 = f1_score(x_test, x_test_pred)
+        precision = precision_score(y_test, y_test_pred)
+        recall = recall_score(y_test, y_test_pred)
+        f1 = f1_score(y_test, y_test_pred)
 
         print('name,val_loss,val_accuracy,precision,recall,f1,complexity')
         print(f'{model_name},{precision},{recall},{f1},{trainableParams}')
