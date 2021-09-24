@@ -55,6 +55,23 @@ def parameter_tuning_baseline_fraud():
             f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                     f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
 
+def test_ind_model_fraud():
+    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
+    tf.keras.backend.clear_session()
+    tf.compat.v1.reset_default_graph()
+
+    model_name = f'test_4-2-6-2-6-2-4'
+    model = baseline_fraud(4, 2, 6, 2)
+
+    model.summary()
+
+    r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
+
+    precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
+
+    print(f'precision: {precision}, recall: {recall}, f1: {f1}')
+
+
 
 def print_baseline_models():
     baseline_fraud(4,2,4,2).summary()
@@ -78,9 +95,10 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 
 def main():
     # grid_search_mnist()
-    parameter_tuning_baseline_fraud()
+    # parameter_tuning_baseline_fraud()
     # print_baseline_models()
     # test_baseline()
+    test_ind_model_fraud()
 
 
 if __name__ == '__main__':

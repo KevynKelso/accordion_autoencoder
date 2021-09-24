@@ -55,11 +55,17 @@ def plot_all_metrics_fraud(df):
     opt2 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
     opt3 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
     opt4 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-2-x-2-x-2-4',df), 4)
+    opt5 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-2-6-x-6-2-4',df), 2)
+
 
     # plot_model_f1(opt1, '4-x-4-2-4-x-4 F1 Scores')
     # plot_model_f1(opt2, '4-9-x-2-x-9-4 F1 Scores')
     # plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
-    plot_model_f1(opt4, '4-2-x-2-x-2-4 F1 Scores')
+    # plot_model_f1(opt4, '4-2-x-2-x-2-4 F1 Scores')
+    plot_model_f1(opt5, '4-2-6-x-6-2-4 F1 Scores')
+
+def get_max_f1_fraud(df):
+    return df[df['f1'] == df['f1'].max()]
 
 
 def main():
@@ -70,6 +76,7 @@ def main():
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
 
+    # print(get_max_f1_fraud(df))
     plot_all_metrics_fraud(df)
 
 
