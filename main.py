@@ -39,8 +39,9 @@ def parameter_tuning_baseline_fraud():
         # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
         # model_name = f'baseline_4-9-x-2-x-9-4->{i}'
         # model_name = f'baseline_4-2-x-2-x-2-4->{i}'
-        model_name = f'baseline_4-2-6-x-6-2-4->{i}'
-        model = baseline_fraud(4, 2, 6, i)
+        # model_name = f'baseline_4-2-6-x-6-2-4->{i}'
+        model_name = f'baseline_x-2-6-14-6-2-x->{i}'
+        model = baseline_fraud(i, 2, 6, 14)
 
         model.summary()
 
@@ -70,7 +71,6 @@ def test_ind_model_fraud():
     precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
 
     print(f'precision: {precision}, recall: {recall}, f1: {f1}')
-
 
 
 def print_baseline_models():
