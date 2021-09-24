@@ -95,10 +95,10 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 
 def main():
     # grid_search_mnist()
-    # parameter_tuning_baseline_fraud()
+    parameter_tuning_baseline_fraud()
     # print_baseline_models()
     # test_baseline()
-    test_ind_model_fraud()
+    # test_ind_model_fraud()
 
 
 if __name__ == '__main__':
