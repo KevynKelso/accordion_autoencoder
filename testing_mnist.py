@@ -26,21 +26,21 @@ def get_model_name(file_path):
 def main():
     baseline_mnist_models = glob.glob('./models/mnist_accordion_classification_models/*baseline*.h5')
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+    print(y_test[0])
 
     for model_file in baseline_mnist_models:
         model = tf.keras.models.load_model(model_file)
         model.summary()
 
         y_test_pred = model.predict(x_test)
-        print(y_test_pred[0])
 
         # parameters for csv need: name,val_loss,val_accuracy,precision,recall,f1,complexity
         model_name = get_model_name(model_file)
         trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
 
-        precision = precision_score(y_test, y_test_pred)
-        recall = recall_score(y_test, y_test_pred)
-        f1 = f1_score(y_test, y_test_pred)
+        precision = precision_score(y_test, y_test_pred, average='binary')
+        recall = recall_score(y_test, y_test_pred, average='binary')
+        f1 = f1_score(y_test, y_test_pred, average='binary')
 
         print('name,val_loss,val_accuracy,precision,recall,f1,complexity')
         print(f'{model_name},{precision},{recall},{f1},{trainableParams}')
