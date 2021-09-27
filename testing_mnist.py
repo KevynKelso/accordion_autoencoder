@@ -33,6 +33,7 @@ def main():
         model.summary()
 
         y_test_pred = model.predict(x_test)
+        y_test_pred = np.argmax(y_test_pred, axis=1)
 
         # parameters for csv need: name,val_loss,val_accuracy,precision,recall,f1,complexity
         model_name = get_model_name(model_file)
