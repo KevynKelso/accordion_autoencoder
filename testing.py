@@ -84,9 +84,10 @@ def main():
 
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
+    print(df)
 
     # plot_all_metrics_fraud(df)
-    plot_all_metrics_mnist(df)
+    # plot_all_metrics_mnist(df)
 
 
     # get_rows_matching_name_pattern('4-x-4-2-4-x-4',df)
