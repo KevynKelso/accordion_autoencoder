@@ -49,7 +49,7 @@ def main():
         recall = recall_score(y_test, y_test_pred, average='weighted')
         f1 = f1_score(y_test, y_test_pred, average='weighted')
 
-        print_line = f'{model_name},{loss},{accuracy},{precision},{recall},{f1},{trainableParams}')
+        print_line = f'{model_name},{loss},{accuracy},{precision},{recall},{f1},{trainableParams}'
 
         with open('./baseline_tuning_mnist.csv', 'a') as f:
             f.write(print_line)
