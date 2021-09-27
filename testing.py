@@ -30,7 +30,7 @@ def parse_layer_nodes_from_name_fraud(layer_nodes, df):
 
     return df
 
-def dataframe_preprocessing_fraud(df, baseline_param):
+def dataframe_preprocessing(df, baseline_param):
     df['change_node'] = df['name'].apply(lambda x: int(x.split('>')[-1]))
 
     df['color'] = df['change_node'].apply(
@@ -51,11 +51,11 @@ def process_data_and_plot_acc_vs_model_type(df):
     return median_model_accs['val_accuracy'].tolist()
 
 def plot_all_metrics_fraud(df):
-    opt1 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-x-4-2-4-x-4',df), 8)
-    opt2 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
-    opt3 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
-    opt4 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-2-x-2-x-2-4',df), 4)
-    opt5 = dataframe_preprocessing_fraud(get_rows_matching_name_pattern('4-2-6-x-6-2-4',df), 2)
+    opt1 = dataframe_preprocessing(get_rows_matching_name_pattern('4-x-4-2-4-x-4',df), 8)
+    opt2 = dataframe_preprocessing(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
+    opt3 = dataframe_preprocessing(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
+    opt4 = dataframe_preprocessing(get_rows_matching_name_pattern('4-2-x-2-x-2-4',df), 4)
+    opt5 = dataframe_preprocessing(get_rows_matching_name_pattern('4-2-6-x-6-2-4',df), 2)
 
 
     # plot_model_f1(opt1, '4-x-4-2-4-x-4 F1 Scores')
@@ -63,6 +63,15 @@ def plot_all_metrics_fraud(df):
     # plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
     # plot_model_f1(opt4, '4-2-x-2-x-2-4 F1 Scores')
     plot_model_f1(opt5, '4-2-6-x-6-2-4 F1 Scores')
+
+def plot_all_metrics_mnist(df):
+    opt1 = dataframe_preprocessing(get_rows_matching_name_pattern('x-64-32-64-x',df), 128)
+    opt2 = dataframe_preprocessing(get_rows_matching_name_pattern('128-x-32-x-128',df), 64)
+    opt3 = dataframe_preprocessing(get_rows_matching_name_pattern('128-64-x-64-128',df), 32)
+
+    # plot_model_f1(opt1, 'x-64-32-64-x F1 Scores')
+    # plot_model_f1(opt2, '128-x-32-x-128 F1 Scores')
+    plot_model_f1(opt3, '128-64-x-64-128 F1 Scores')
 
 def get_max_f1_fraud(df):
     return df[df['f1'] == df['f1'].max()]
@@ -76,8 +85,8 @@ def main():
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
 
-    # print(get_max_f1_fraud(df))
-    plot_all_metrics_fraud(df)
+    # plot_all_metrics_fraud(df)
+    plot_all_metrics_mnist(df)
 
 
     # get_rows_matching_name_pattern('4-x-4-2-4-x-4',df)
