@@ -25,14 +25,19 @@ def get_model_name(file_path):
 
 def main():
     baseline_mnist_models = glob.glob('./models/mnist_accordion_classification_models/*baseline*.h5')
-    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
-    print(y_test[0])
+    (_, _), (x_test, y_test) = get_formatted_mnist_classification_data()
+
+    with open('./baseline_tuning_mnist.csv', 'a') as f:
+        f.write('name,val_loss,val_accuracy,precision,recall,f1,complexity')
 
     for model_file in baseline_mnist_models:
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
         model = tf.keras.models.load_model(model_file)
         model.summary()
-        loss, accuracy = model.evaluate(x_test,y_test)
 
+        loss, accuracy = model.evaluate(x_test,y_test)
         y_test_pred = model.predict(x_test)
         y_test_pred = np.argmax(y_test_pred, axis=1)
 
@@ -44,10 +49,10 @@ def main():
         recall = recall_score(y_test, y_test_pred, average='weighted')
         f1 = f1_score(y_test, y_test_pred, average='weighted')
 
-        print('name,val_loss,val_accuracy,precision,recall,f1,complexity')
-        print(f'{model_name},{loss},{accuracy},{precision},{recall},{f1},{trainableParams}')
+        print_line = f'{model_name},{loss},{accuracy},{precision},{recall},{f1},{trainableParams}')
 
-        break
+        with open('./baseline_tuning_mnist.csv', 'a') as f:
+            f.write(print_line)
 
 if __name__ == "__main__":
     main()
