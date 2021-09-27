@@ -31,6 +31,7 @@ def main():
     for model_file in baseline_mnist_models:
         model = tf.keras.models.load_model(model_file)
         model.summary()
+        loss, accuracy = model.evaluate(x_test,y_test)
 
         y_test_pred = model.predict(x_test)
         y_test_pred = np.argmax(y_test_pred, axis=1)
@@ -44,7 +45,7 @@ def main():
         f1 = f1_score(y_test, y_test_pred, average='weighted')
 
         print('name,val_loss,val_accuracy,precision,recall,f1,complexity')
-        print(f'{model_name},{precision},{recall},{f1},{trainableParams}')
+        print(f'{model_name},{loss},{accuracy},{precision},{recall},{f1},{trainableParams}')
 
         break
 
