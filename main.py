@@ -51,11 +51,11 @@ def parameter_tuning_baseline_mnist():
     trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
     precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
 
-    with open("test_unique_arch_mnist", "a") as f:
+    with open("test_unique_arch_mnist.csv", "a") as f:
         f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                 f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
 
-    # for i in range(1, 129):
+    # for i in range(17, 129):
         # model = baseline_mnist(i,64,32)
         # model_name = f'baseline_x-64-32-64-x->{i}'
 
