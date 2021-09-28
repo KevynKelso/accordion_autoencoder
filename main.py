@@ -16,7 +16,7 @@ from utils import mad_score
 def parameter_tuning_baseline_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
 
-    model_names = '16-8-4-8-16 8-16-4-16-8 8-4-2-4-8 4-8-2-8-4 4-2-1-2-4 2-4-1-4-2'.split(' ')
+    model_names = '64-128-32-128-64'.split(' ')
 
     for model_name in model_names:
         tf.keras.backend.clear_session()
