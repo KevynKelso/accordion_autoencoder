@@ -15,58 +15,25 @@ from utils import mad_score
 
 def parameter_tuning_baseline_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
-    # model_names_to_test = 'x-64-32-64-x 128-x-32-x-128 128-64-x-64-128'.split(' ')
 
-    # for t_name in model_names_to_test:
-        # model = baseline_mnist(1, 1, 1)
+    model_names = '16-8-4-8-16 8-16-4-16-8 8-4-2-4-8 4-8-2-8-4 4-2-1-2-4 2-4-1-4-2'.split(' ')
 
-        # for i in range(1, 129):
-            # tf.keras.backend.clear_session()
-            # tf.compat.v1.reset_default_graph()
-            # if '128' in t_name and '64' in t_name:
-                # model = baseline_mnist(128, 64, i)
+    for model_name in model_names:
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
 
-            # if '64' in t_name and '32' in t_name:
-                # model = baseline_mnist(i, 64, 32)
-
-            # if '128' in t_name and '32' in t_name:
-                # model = baseline_mnist(128, i, 32)
-
-            # model_name = f'baseline_{t_name}->{i}'
-
-            # r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
-
-            # precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
-
-            # trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
-
-            # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
-
-    tf.keras.backend.clear_session()
-    tf.compat.v1.reset_default_graph()
-    # model = baseline_mnist(64,32,16)
-    # model_name = f'64-32-16-32-64'
-
-    # r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
-    # trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
-    # precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
-
-    # with open("test_unique_arch_mnist.csv", "a") as f:
-        # f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                # f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
-
-    for i in range(1, 129):
-        model = baseline_mnist(i,64,32)
-        model_name = f'baseline_x-64-32-64-x->{i}'
+        x1 = int(model_name.split('-')[0])
+        x2 = int(model_name.split('-')[1])
+        x3 = int(model_name.split('-')[2])
+        model = baseline_mnist(x1,x2,x3)
 
         r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
         trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
         precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
 
-        with open("baseline_tuning_mnist_5_epoch.csv", "a") as f:
+        with open("test_unique_arch_mnist.csv", "a") as f:
             f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                     f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
-
 
 def parameter_tuning_baseline_fraud():
     training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
