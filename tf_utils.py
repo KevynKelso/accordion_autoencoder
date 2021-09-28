@@ -34,7 +34,7 @@ def fit_model_fraud(model, training_data, validation_data, model_name, noisy=0.0
 def fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test):
     model.summary()
 
-    r = model.fit(x_train, y_train, epochs=5, shuffle=True, validation_data=(x_test, y_test), callbacks=[early_stop()])
+    r = model.fit(x_train, y_train, epochs=200, shuffle=True, validation_data=(x_test, y_test), callbacks=[early_stop()])
 
     actual_epoch = len(r.history['loss'])
     model_file = f'{actual_epoch}p-{model_name}-{round(min(r.history["loss"]),3)}'
