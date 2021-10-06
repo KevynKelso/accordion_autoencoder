@@ -1,6 +1,6 @@
 import numpy as np
 
-from tensorflow.keras.datasets import mnist, fasion_mnist
+from tensorflow.keras.datasets import mnist, fashion_mnist
 from tensorflow.keras.utils import normalize
 
 
@@ -22,7 +22,7 @@ def get_formatted_mnist_data():
     return normalize_image_data_8_bit(training_data), normalize_image_data_8_bit(testing_data)
 
 def get_formatted_fashion_mnist():
-    (x_train, y_train), (x_test, y_test) = fasion_mnist.load_data()
+    (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
     x_train = normalize(x_train, axis=1).reshape(x_train.shape[0], -1)
     x_test = normalize(x_test, axis=1).reshape(x_test.shape[0], -1)
