@@ -17,8 +17,8 @@ def parameter_tuning_baseline_fashion_mnist():
     (x_train, y_train), (x_test, y_test) = get_formatted_fashion_mnist()
 
     model_names = []
-    for i in range(0, 65):
-        model_names.append(f'128-64-{i}-64-128')
+    for i in range(34, 65):
+        model_names.append(f'128-64-x-64-128->{i}')
 
     for model_name in model_names:
         tf.keras.backend.clear_session()
@@ -26,10 +26,10 @@ def parameter_tuning_baseline_fashion_mnist():
 
         x1 = int(model_name.split('-')[0])
         x2 = int(model_name.split('-')[1])
-        x3 = int(model_name.split('-')[2])
+        x3 = int(model_name.split('->')[-1])
         model = baseline_mnist(x1,x2,x3)
 
-        r = fit_model_mnist(model, '128-64-x-64-128', x_train, y_train, x_test, y_test)
+        r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
         trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
         precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
 
