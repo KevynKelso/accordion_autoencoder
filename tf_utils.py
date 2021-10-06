@@ -38,6 +38,6 @@ def fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test):
 
     actual_epoch = len(r.history['loss'])
     model_file = f'{actual_epoch}p-{model_name}-{round(min(r.history["loss"]),3)}'
-    model.save(f'models/mnist_accordion_classification_models/{model_file}.h5')
+    model.save(f'models/fashion_mnist_models/{model_file}.h5')
 
     return r

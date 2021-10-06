@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from accodion_classifiers import baseline_mnist, baseline_fraud
-from accordion_mnist import get_formatted_mnist_classification_data
+from accordion_mnist import get_formatted_mnist, get_formatted_fashion_mnist
 from tf_utils import fit_model_fraud, fit_model_mnist
 from plots import *
 
@@ -13,8 +13,32 @@ from creditcarddata import get_creditcard_data_normalized
 from utils import mad_score
 
 
+def parameter_tuning_baseline_fashion_mnist():
+    (x_train, y_train), (x_test, y_test) = get_formatted_fashion_mnist()
+
+    model_names = []
+    for i in range(0, 65):
+        model_names.append(f'128-64-{i}-64-128')
+
+    for model_name in model_names:
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
+        x1 = int(model_name.split('-')[0])
+        x2 = int(model_name.split('-')[1])
+        x3 = int(model_name.split('-')[2])
+        model = baseline_mnist(x1,x2,x3)
+
+        r = fit_model_mnist(model, '128-64-x-64-128', x_train, y_train, x_test, y_test)
+        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+        precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
+
+        with open("fashion_mnist.csv", "a") as f:
+            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
 def parameter_tuning_baseline_mnist():
-    (x_train, y_train), (x_test, y_test) = get_formatted_mnist_classification_data()
+    (x_train, y_train), (x_test, y_test) = get_formatted_mnist()
 
     model_names = '64-128-32-128-64'.split(' ')
 
@@ -112,7 +136,8 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 def main():
     # grid_search_mnist()
     # parameter_tuning_baseline_fraud()
-    parameter_tuning_baseline_mnist()
+    # parameter_tuning_baseline_mnist()
+    parameter_tuning_baseline_fashion_mnist()
     # print_baseline_models()
     # test_baseline()
     # test_ind_model_fraud()

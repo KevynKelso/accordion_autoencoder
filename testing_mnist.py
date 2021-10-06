@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import glob
 
-from accordion_mnist import get_formatted_mnist_classification_data
+from accordion_mnist import get_formatted_mnist
 
 from sklearn.metrics import (precision_score,
                              recall_score,
@@ -25,7 +25,7 @@ def get_model_name(file_path):
 
 def main():
     baseline_mnist_models = glob.glob('./models/mnist_accordion_classification_models/*baseline*.h5')
-    (_, _), (x_test, y_test) = get_formatted_mnist_classification_data()
+    (_, _), (x_test, y_test) = get_formatted_mnist()
 
     with open('./baseline_tuning_mnist.csv', 'a') as f:
         f.write('name,val_loss,val_accuracy,precision,recall,f1,complexity')
