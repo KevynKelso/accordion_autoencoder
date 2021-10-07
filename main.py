@@ -1,111 +1,14 @@
 import tensorflow as tf
+import numpy as np
 
-from accodion_classifiers import baseline_mnist, baseline_fraud
-from accordion_mnist import get_formatted_mnist, get_formatted_fashion_mnist
-from tf_utils import fit_model_fraud, fit_model_mnist
-from plots import *
+from accodion_classifiers import double_latent_model
+from accordion_mnist import get_formatted_fashion_mnist
+from tf_utils import fit_model_mnist
+from utils import mad_score
 
 from sklearn.metrics import (precision_score,
                              recall_score,
                              f1_score)
-
-from creditcarddata import get_creditcard_data_normalized
-from utils import mad_score
-
-
-def parameter_tuning_baseline_fashion_mnist():
-    (x_train, y_train), (x_test, y_test) = get_formatted_fashion_mnist()
-
-    model_names = []
-    for i in range(34, 65):
-        model_names.append(f'128-64-x-64-128->{i}')
-
-    for model_name in model_names:
-        tf.keras.backend.clear_session()
-        tf.compat.v1.reset_default_graph()
-
-        x1 = int(model_name.split('-')[0])
-        x2 = int(model_name.split('-')[1])
-        x3 = int(model_name.split('->')[-1])
-        model = baseline_mnist(x1,x2,x3)
-
-        r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
-        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
-        precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
-
-        with open("fashion_mnist.csv", "a") as f:
-            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
-
-def parameter_tuning_baseline_mnist():
-    (x_train, y_train), (x_test, y_test) = get_formatted_mnist()
-
-    model_names = '64-128-32-128-64'.split(' ')
-
-    for model_name in model_names:
-        tf.keras.backend.clear_session()
-        tf.compat.v1.reset_default_graph()
-
-        x1 = int(model_name.split('-')[0])
-        x2 = int(model_name.split('-')[1])
-        x3 = int(model_name.split('-')[2])
-        model = baseline_mnist(x1,x2,x3)
-
-        r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
-        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
-        precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
-
-        with open("test_unique_arch_mnist.csv", "a") as f:
-            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
-
-def parameter_tuning_baseline_fraud():
-    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
-
-    for i in range(1, 26):
-        tf.keras.backend.clear_session()
-        tf.compat.v1.reset_default_graph()
-
-        # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
-        # model_name = f'baseline_4-9-x-2-x-9-4->{i}'
-        # model_name = f'baseline_4-2-x-2-x-2-4->{i}'
-        # model_name = f'baseline_4-2-6-x-6-2-4->{i}'
-        model_name = f'baseline_x-2-6-14-6-2-x->{i}'
-        model = baseline_fraud(i, 2, 6, 14)
-
-        model.summary()
-
-        r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
-
-        precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
-
-        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
-
-        # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
-        with open("baseline_tuning_fraud.csv", "a") as f:
-            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
-
-def test_ind_model_fraud():
-    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
-    tf.keras.backend.clear_session()
-    tf.compat.v1.reset_default_graph()
-
-    model_name = f'test_4-2-6-2-6-2-4'
-    model = baseline_fraud(4, 2, 6, 2)
-
-    model.summary()
-
-    r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
-
-    precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
-
-    print(f'precision: {precision}, recall: {recall}, f1: {f1}')
-
-
-def print_baseline_models():
-    baseline_fraud(4,2,4,2).summary()
-    # baseline_mnist(128, 64, 32).summary()
 
 def test_model_mnist_precision_recall_f1(model, testing_data, y_data):
     y_test_pred = model.predict(testing_data)
@@ -133,15 +36,30 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 
     return precision, recall, f1
 
-def main():
-    # grid_search_mnist()
-    # parameter_tuning_baseline_fraud()
-    # parameter_tuning_baseline_mnist()
-    parameter_tuning_baseline_fashion_mnist()
-    # print_baseline_models()
-    # test_baseline()
-    # test_ind_model_fraud()
+def batch_train_models(lower, upper, model_spec, data_func, model_func, test_func):
+    (x_train, y_train), (x_test, y_test) = data_func()
 
+    for i in range (lower, upper+1):
+        model_name = f'{model_spec}->{i}'
+
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
+        x1 = int(model_name.split('-')[0])
+        x2 = int(model_name.split('-')[1])
+        model = model_func(x1,x2,i)
+
+        r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
+
+        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+        precision, recall, f1 = test_func(model, x_test, y_test)
+
+        with open("fashion_mnist.csv", "a") as f:
+            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
+def main():
+    batch_train_models(1, 64, '128-64-x-x-64-128', get_formatted_fashion_mnist, double_latent_model, test_model_mnist_precision_recall_f1)
 
 if __name__ == '__main__':
     main()

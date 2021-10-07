@@ -30,3 +30,99 @@ def grid_search_mnist():
                     f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                             f'{max(r.history["val_accuracy"])}\n')
 
+
+def accordion_mnist_classifier(model_name, accordions, compression, decompression):
+    model = tf.keras.Sequential(name=model_name)
+    model.add(layers.Flatten(input_shape=(28,28)))
+
+    for _ in range(accordions):
+        model.add(layers.Dense(compression, activation='relu'))
+        model.add(layers.Dense(decompression, activation='relu'))
+
+    model.add(layers.Dense(compression, activation='relu'))
+    model.add(layers.Dense(10, activation='softmax'))
+
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+    return model
+
+def eval_accordion_mnist_classifier(model_name, accordions, compression, decompression):
+    num_nodes = (accordions * (compression + decompression)) + compression
+    num_layers = accordions*2 + 1
+    nodes_per_layer = round(num_nodes/num_layers)
+
+    eval_model = tf.keras.Sequential(name=model_name)
+    eval_model.add(layers.Flatten(input_shape=(28,28)))
+
+    for _ in range(num_layers):
+        eval_model.add(layers.Dense(nodes_per_layer, activation='relu'))
+
+    eval_model.add(layers.Dense(10, activation='softmax'))
+    eval_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+    return eval_model
+
+def test_ind_model_fraud():
+    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
+    tf.keras.backend.clear_session()
+    tf.compat.v1.reset_default_graph()
+
+    model_name = f'test_4-2-6-2-6-2-4'
+    model = baseline_fraud(4, 2, 6, 2)
+
+    model.summary()
+
+    r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
+
+    precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
+
+    print(f'precision: {precision}, recall: {recall}, f1: {f1}')
+
+def parameter_tuning_baseline_fraud():
+    training_data, validation_data, testing_data, y_data = get_creditcard_data_normalized()
+
+    for i in range(1, 26):
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
+        # model_name = f'baseline_4-x-4-2-4-x-4->{i}'
+        # model_name = f'baseline_4-9-x-2-x-9-4->{i}'
+        # model_name = f'baseline_4-2-x-2-x-2-4->{i}'
+        # model_name = f'baseline_4-2-6-x-6-2-4->{i}'
+        model_name = f'baseline_x-2-6-14-6-2-x->{i}'
+        model = baseline_fraud(i, 2, 6, 14)
+
+        model.summary()
+
+        r = fit_model_fraud(model, training_data, validation_data, model_name=model_name, num_epoch=200)
+
+        precision, recall, f1 = test_model_fraud_precision_recall_f1(model, testing_data, y_data)
+
+        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+
+        # header for this file: name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
+        with open("baseline_tuning_fraud.csv", "a") as f:
+            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
+def parameter_tuning_baseline_mnist():
+    (x_train, y_train), (x_test, y_test) = get_formatted_mnist()
+
+    model_names = '64-128-32-128-64'.split(' ')
+
+    for model_name in model_names:
+        tf.keras.backend.clear_session()
+        tf.compat.v1.reset_default_graph()
+
+        x1 = int(model_name.split('-')[0])
+        x2 = int(model_name.split('-')[1])
+        x3 = int(model_name.split('-')[2])
+        model = baseline_mnist(x1,x2,x3)
+
+        r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
+        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+        precision, recall, f1 = test_model_mnist_precision_recall_f1(model, x_test, y_test)
+
+        with open("test_unique_arch_mnist.csv", "a") as f:
+            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')

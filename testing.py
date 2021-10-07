@@ -1,9 +1,8 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
 from plots import *
-from plots_fraud import plot_model_f1
+from plots_fraud import plot_model_sensitivity
 
 blue = '#003f5c'
 red = '#bc5090'
@@ -50,28 +49,18 @@ def process_data_and_plot_acc_vs_model_type(df):
     # Baseline, Accordion is returned
     return median_model_accs['val_accuracy'].tolist()
 
-def plot_all_metrics_fraud(df):
-    opt1 = dataframe_preprocessing(get_rows_matching_name_pattern('4-x-4-2-4-x-4',df), 8)
-    opt2 = dataframe_preprocessing(get_rows_matching_name_pattern('4-9-x-2-x-9-4',df), 4)
-    opt3 = dataframe_preprocessing(get_rows_matching_name_pattern('4-9-4-x-4-9-4',df), 2)
-    opt4 = dataframe_preprocessing(get_rows_matching_name_pattern('4-2-x-2-x-2-4',df), 4)
-    opt5 = dataframe_preprocessing(get_rows_matching_name_pattern('4-2-6-x-6-2-4',df), 2)
+# expecting dataframe with standard format of:
+# name, loss, accuracy, val_loss, val_accuracy, precision, recall, f1, complexity
+# where name is something like a-b-x-b-a->i
+def plot_all_metrics_std_csv(df, pattern, baseline_nodes, save=False):
+    opt = dataframe_preprocessing(get_rows_matching_name_pattern(pattern,df),baseline_nodes)
 
-
-    # plot_model_f1(opt1, '4-x-4-2-4-x-4 F1 Scores')
-    # plot_model_f1(opt2, '4-9-x-2-x-9-4 F1 Scores')
-    # plot_model_f1(opt3, '4-9-4-x-4-9-4 F1 Scores')
-    # plot_model_f1(opt4, '4-2-x-2-x-2-4 F1 Scores')
-    plot_model_f1(opt5, '4-2-6-x-6-2-4 F1 Scores')
-
-def plot_all_metrics_mnist(df):
-    opt1 = dataframe_preprocessing(get_rows_matching_name_pattern('x-64-32-64-x',df), 128)
-    opt2 = dataframe_preprocessing(get_rows_matching_name_pattern('128-x-32-x-128',df), 64)
-    opt3 = dataframe_preprocessing(get_rows_matching_name_pattern('128-64-x-64-128',df), 32)
-
-    # plot_model_f1(opt1, 'x-64-32-64-x F1 Scores')
-    # plot_model_f1(opt2, '128-x-32-x-128 F1 Scores')
-    plot_model_f1(opt3, '128-64-x-64-128 F1 Scores')
+    plot_model_sensitivity(opt, f'{pattern} F1 Scores', 'f1', save=save)
+    plot_model_sensitivity(opt, f'{pattern} Accuracy Scores', 'val_accuracy', save=save)
+    plot_model_sensitivity(opt, f'{pattern} Loss Scores', 'val_loss', save=save)
+    plot_model_sensitivity(opt, f'{pattern} Precision Scores', 'precision', save=save)
+    plot_model_sensitivity(opt, f'{pattern} Recall Scores', 'recall', save=save)
+    plot_model_sensitivity(opt, f'{pattern} Complexity', 'complexity', save=save)
 
 def get_max_f1_fraud(df):
     return df[df['f1'] == df['f1'].max()]
@@ -84,9 +73,8 @@ def main():
 
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
-    print(df)
 
-    # plot_all_metrics_fraud(df)
+    plot_all_metrics_std_csv(df, '128-64-x-64-128', 32, save=True)
     # plot_all_metrics_mnist(df)
 
 
