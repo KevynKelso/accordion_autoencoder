@@ -24,13 +24,13 @@ def parse_layer_nodes_from_name_mnist(layer_nodes, df):
 
 def parse_layer_nodes_from_name_fraud(layer_nodes, df):
     df[layer_nodes] = df['name'].apply(
-            lambda x: int(x.split('>')[-1]) if f'' in x else int(layer_nodes)
+            lambda x: int(x.split('->')[-1]) if f'' in x else int(layer_nodes)
     )
 
     return df
 
 def dataframe_preprocessing(df, baseline_param):
-    df['change_node'] = df['name'].apply(lambda x: int(x.split('>')[-1]))
+    df['change_node'] = df['name'].apply(lambda x: int(x.split('->')[-1]))
 
     df['color'] = df['change_node'].apply(
             lambda x: red if x == baseline_param else blue
@@ -61,10 +61,6 @@ def plot_all_metrics_std_csv(df, pattern, baseline_nodes, save=False):
     plot_model_sensitivity(opt, f'{pattern} Precision Scores', 'precision', save=save)
     plot_model_sensitivity(opt, f'{pattern} Recall Scores', 'recall', save=save)
     plot_model_sensitivity(opt, f'{pattern} Complexity', 'complexity', save=save)
-
-def get_max_f1_fraud(df):
-    return df[df['f1'] == df['f1'].max()]
-
 
 def main():
     if len(sys.argv) < 2:

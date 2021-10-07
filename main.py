@@ -59,7 +59,7 @@ def batch_train_models(lower, upper, model_spec, data_func, model_func, test_fun
                     f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
 
 def main():
-    batch_train_models(1, 64, '128-64-x-x-64-128', get_formatted_fashion_mnist, double_latent_model, test_model_mnist_precision_recall_f1)
+    batch_train_models(37, 64, '128-64-x-x-64-128', get_formatted_fashion_mnist, double_latent_model, test_model_mnist_precision_recall_f1)
 
 if __name__ == '__main__':
     main()

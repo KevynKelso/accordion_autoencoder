@@ -25,6 +25,7 @@ def plot_model_f1(df, title, save=False):
     plt.show()
 
 def plot_model_sensitivity(df, title, metric, save=False):
+    plt.clf()
     plt.bar(df['change_node'], df[metric], color=df['color'])
 
     blue_patch = mpatches.Patch(color=blue, label='Modified Model')
