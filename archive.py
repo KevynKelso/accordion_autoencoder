@@ -149,3 +149,30 @@ def parse_layer_nodes_from_name_fraud(layer_nodes, df):
 
     return df
 
+# want a plot for f1 score
+# requires a color assigned
+def plot_model_f1(df, title, save=False):
+    plt.bar(df['change_node'], df['f1'], color=df['color'])
+
+    blue_patch = mpatches.Patch(color=blue, label='Modified Model')
+    red_patch = mpatches.Patch(color=red, label='Baseline Model')
+    plt.legend(handles=[red_patch,blue_patch])
+
+    plt.ylim([0,1])
+    plt.title(title)
+    plt.xlabel('Layer nodes')
+    plt.ylabel('F1 score')
+
+    if save:
+        plt.savefig('./figures/{title}')
+        return
+
+    plt.show()
+
+# Not sure if this is useful
+def process_data_and_plot_acc_vs_model_type(df):
+    median_model_accs = df.groupby('accordion', as_index=False)['val_accuracy'].median()
+
+    # Baseline, Accordion is returned
+    return median_model_accs['val_accuracy'].tolist()
+
