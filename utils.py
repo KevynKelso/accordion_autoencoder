@@ -12,3 +12,8 @@ def fatal_check_args_testing(args):
     if len(args) < 2:
         print('Usage: python3 testing.py <csv file>')
         exit(1)
+
+def write_csv_std(file_name, model_name, r, precision, recall, f1, trainable_params):
+    with open(file_name, "a") as f:
+        f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
+                f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainable_params}\n')

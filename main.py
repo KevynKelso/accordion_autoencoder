@@ -4,7 +4,7 @@ import numpy as np
 from accodion_classifiers import double_latent_model
 from accordion_mnist import get_formatted_fashion_mnist
 from tf_utils import fit_model_mnist
-from utils import mad_score
+from utils import mad_score, write_csv_std
 
 from sklearn.metrics import (precision_score,
                              recall_score,
@@ -36,7 +36,7 @@ def test_model_fraud_precision_recall_f1(model, testing_data, y_data):
 
     return precision, recall, f1
 
-def batch_train_models(lower, upper, model_spec, data_func, model_func, test_func):
+def batch_train_models(lower, upper, model_spec, data_func, model_func, test_func, csv_file_name):
     (x_train, y_train), (x_test, y_test) = data_func()
 
     for i in range (lower, upper+1):
@@ -51,15 +51,17 @@ def batch_train_models(lower, upper, model_spec, data_func, model_func, test_fun
 
         r = fit_model_mnist(model, model_name, x_train, y_train, x_test, y_test)
 
-        trainableParams = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
+        trainable_params = np.sum([np.prod(v.get_shape()) for v in model.trainable_weights])
         precision, recall, f1 = test_func(model, x_test, y_test)
 
-        with open("fashion_mnist.csv", "a") as f:
-            f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
-                    f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+        write_csv_std(csv_file_name, model_name, r, precision, recall, f1, trainable_params)
 
 def main():
-    batch_train_models(37, 64, '128-64-x-x-64-128', get_formatted_fashion_mnist, double_latent_model, test_model_mnist_precision_recall_f1)
+    batch_train_models(
+            37, 64, '128-64-x-x-64-128', get_formatted_fashion_mnist,
+            double_latent_model, test_model_mnist_precision_recall_f1,
+            'fashion_mnist.csv'
+    )
 
 if __name__ == '__main__':
     main()
