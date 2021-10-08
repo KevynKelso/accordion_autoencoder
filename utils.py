@@ -8,3 +8,7 @@ def mad_score(points):
 
     return 0.6745 * ad / mad
 
+def fatal_check_args_testing(args):
+    if len(args) < 2:
+        print('Usage: python3 testing.py <csv file>')
+        exit(1)

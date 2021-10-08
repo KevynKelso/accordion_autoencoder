@@ -126,3 +126,26 @@ def parameter_tuning_baseline_mnist():
         with open("test_unique_arch_mnist.csv", "a") as f:
             f.write(f'{model_name},{min(r.history["loss"])},{max(r.history["accuracy"])},{min(r.history["val_loss"])},' +
                     f'{max(r.history["val_accuracy"])},{precision},{recall},{f1},{trainableParams}\n')
+
+def parse_layer_nodes_from_name_mnist(layer_nodes, df):
+    df[f'l{layer_nodes}_nodes'] = df['name'].apply(
+            lambda x: int(x.split('>')[-1]) if f'l{layer_nodes}' in x else int(layer_nodes)
+    )
+
+    df['accordion'] = df['name'].apply(
+            lambda x: True if 'l128' in x and int(x.split('>')[-1]) <= 64 or 'l64' in x and int(x.split('>')[-1]) <= 32 else False
+    )
+
+    df['color'] = df[f'l{layer_nodes}_nodes'].apply(
+            lambda x: red if x == int(layer_nodes) else '#ff7c43' if x <= 32  else blue
+    )
+
+    return df
+
+def parse_layer_nodes_from_name_fraud(layer_nodes, df):
+    df[layer_nodes] = df['name'].apply(
+            lambda x: int(x.split('->')[-1]) if f'' in x else int(layer_nodes)
+    )
+
+    return df
+

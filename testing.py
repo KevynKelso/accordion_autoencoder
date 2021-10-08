@@ -1,33 +1,11 @@
 import pandas as pd
 import sys
 
-from plots import *
 from plots_fraud import plot_model_sensitivity
+from utils import fatal_check_args_testing
 
 blue = '#003f5c'
 red = '#bc5090'
-
-def parse_layer_nodes_from_name_mnist(layer_nodes, df):
-    df[f'l{layer_nodes}_nodes'] = df['name'].apply(
-            lambda x: int(x.split('>')[-1]) if f'l{layer_nodes}' in x else int(layer_nodes)
-    )
-
-    df['accordion'] = df['name'].apply(
-            lambda x: True if 'l128' in x and int(x.split('>')[-1]) <= 64 or 'l64' in x and int(x.split('>')[-1]) <= 32 else False
-    )
-
-    df['color'] = df[f'l{layer_nodes}_nodes'].apply(
-            lambda x: red if x == int(layer_nodes) else '#ff7c43' if x <= 32  else blue
-    )
-
-    return df
-
-def parse_layer_nodes_from_name_fraud(layer_nodes, df):
-    df[layer_nodes] = df['name'].apply(
-            lambda x: int(x.split('->')[-1]) if f'' in x else int(layer_nodes)
-    )
-
-    return df
 
 def dataframe_preprocessing(df, baseline_param):
     df['change_node'] = df['name'].apply(lambda x: int(x.split('->')[-1]))
@@ -37,7 +15,6 @@ def dataframe_preprocessing(df, baseline_param):
     )
 
     return df
-
 
 def get_rows_matching_name_pattern(name_pattern, df):
     return df[df['name'].str.contains(name_pattern)]
@@ -63,24 +40,12 @@ def plot_all_metrics_std_csv(df, pattern, baseline_nodes, save=False):
     plot_model_sensitivity(opt, f'{pattern} Complexity', 'complexity', save=save)
 
 def main():
-    if len(sys.argv) < 2:
-        print('Usage: python3 testing.py <csv file>')
-        return
+    fatal_check_args_testing(sys.argv)
 
     file_name = sys.argv[1]
     df = pd.read_csv(file_name)
 
-    plot_all_metrics_std_csv(df, '128-64-x-64-128', 32, save=True)
-    # plot_all_metrics_mnist(df)
-
-
-    # get_rows_matching_name_pattern('4-x-4-2-4-x-4',df)
-
-    # df = parse_layer_nodes_from_name_mnist('layer', df)
-
-
-    # plot_accuracy_vs_layer_nodes_mnist(df, '64', 'Accuracy vs. Number of Nodes Changed in Layer 2 and 4')
-    # plt.show()
+    plot_all_metrics_std_csv(df, '128-64-x-x-64-128', 32, save=True)
 
 if __name__ == '__main__':
     main()
